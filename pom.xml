@@ -39,6 +39,9 @@
 		<checkstyle.version>13.9.0</checkstyle.version>
 		<properties-maven-plugin.version>1.2.1</properties-maven-plugin.version>
 		<sonar-maven-plugin.version>5.7.0.6970</sonar-maven-plugin.version>
+		<jib-maven-plugin.version>3.5.2</jib-maven-plugin.version>
+		<jib-native-image-extension-maven.version>0.1.0</jib-native-image-extension-maven.version>
+		<native-image-name>native-executable</native-image-name>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -245,6 +248,69 @@
 	</build>
 
 	<profiles>
+		<profile>
+			<id>native</id>
+			<properties>
+				<jib-maven-plugin.image>scratch</jib-maven-plugin.image>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.hibernate.orm</groupId>
+						<artifactId>hibernate-maven-plugin</artifactId>
+						<version>${hibernate.version}</version>
+						<executions>
+							<execution>
+								<id>enhance</id>
+								<goals>
+									<goal>enhance</goal>
+								</goals>
+								<configuration>
+									<enableAssociationManagement>true</enableAssociationManagement>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.graalvm.buildtools</groupId>
+						<artifactId>native-maven-plugin</artifactId>
+						<configuration>
+							<imageName>${native-image-name}</imageName>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>com.google.cloud.tools</groupId>
+						<artifactId>jib-maven-plugin</artifactId>
+						<version>${jib-maven-plugin.version}</version>
+						<configuration>
+							<from>
+								<image>${jib-maven-plugin.image}</image>
+							</from>
+							<container>
+								<workingDirectory>/tmp</workingDirectory>
+							</container>
+							<pluginExtensions>
+								<pluginExtension>
+									<implementation>
+										com.google.cloud.tools.jib.maven.extension.nativeimage.JibNativeImageExtension
+									</implementation>
+									<properties>
+										<imageName>${native-image-name}</imageName>
+									</properties>
+								</pluginExtension>
+							</pluginExtensions>
+						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>com.google.cloud.tools</groupId>
+								<artifactId>jib-native-image-extension-maven</artifactId>
+								<version>${jib-native-image-extension-maven.version}</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<id>sonar</id>
 			<build>

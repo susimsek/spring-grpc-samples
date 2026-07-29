@@ -38,7 +38,7 @@
 		<maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
 		<checkstyle.version>13.9.0</checkstyle.version>
 		<properties-maven-plugin.version>1.2.1</properties-maven-plugin.version>
-		<sonar-maven-plugin.version>5.3.1.64631</sonar-maven-plugin.version>
+		<sonar-maven-plugin.version>5.7.0.6970</sonar-maven-plugin.version>
 	</properties>
 	<dependencies>
 		<dependency>

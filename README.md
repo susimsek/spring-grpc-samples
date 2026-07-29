@@ -412,6 +412,8 @@ Apply formatting:
 
 ### Sonar
 
+If you use SonarCloud or SonarQube in your pipeline, you can run analysis locally as well.
+
 Sonar properties live in:
 
 ```text
@@ -421,7 +423,9 @@ sonar-project.properties
 Run analysis:
 
 ```bash
-./mvnw -Psonar sonar:sonar
+export SONAR_TOKEN=...
+./mvnw -B -ntp -Psonar verify sonar:sonar \
+  -Dsonar.token="$SONAR_TOKEN"
 ```
 
 ### Coverage
@@ -437,13 +441,39 @@ Handwritten classes, including the Spring Boot application class and JPA entitie
 
 ## GraalVM Native Image
 
-This project uses Spring Boot AOT and GraalVM Native Build Tools.
-
-Build the native executable:
+Native executable:
 
 ```bash
 ./mvnw -Pnative -DskipTests native:compile
 ```
+
+Output: `target/native-executable`
+
+Native-image build arguments:
+
+```bash
+./mvnw -ntp -Pnative -DskipTests \
+  -DbuildArgs="--no-fallback,-Os,--static,--libc=musl,--verbose,-J-Xmx6g" \
+  native:compile
+```
+
+`buildArgs` meaning:
+
+- `--no-fallback`: fail the build instead of producing a fallback JVM image
+- `-Os`: optimize for size
+- `--static`: build a statically linked binary
+- `--libc=musl`: link against musl (Linux/musl environments)
+- `--verbose`: print detailed native-image output, useful for debugging
+- `-J-Xmx6g`: give the native-image process up to about 6 GB heap
+
+UPX compression (optional):
+
+```bash
+upx --lzma --best target/native-executable
+```
+
+- `--best`: maximum compression
+- `--lzma`: use LZMA for better compression, slower but smaller
 
 Run it:
 
@@ -459,6 +489,38 @@ grpcurl -plaintext \
   localhost:9090 \
   grpc.health.v1.Health/Check
 ```
+
+## Docker Image
+
+Build a JVM container image without a Dockerfile:
+
+```bash
+./mvnw -DskipTests jib:dockerBuild
+```
+
+Push to a registry:
+
+```bash
+./mvnw -DskipTests jib:build -Djib.to.image=YOUR_IMAGE
+```
+
+Defaults from `pom.xml`:
+
+- Base image: `eclipse-temurin:25-jre-alpine`
+- Platform: `linux/arm64`, override with `-Djib-maven-plugin.architecture=amd64` if needed
+
+Native Docker image (GraalVM Native Image + Jib):
+
+```bash
+./mvnw -Pnative -DskipTests jib:dockerBuild \
+  -Djib.to.image=spring-grpc-samples:latest-native
+```
+
+Defaults from `pom.xml`, `native` profile:
+
+- Base image: `scratch`, contains only the native binary and no JVM
+- Working directory: `/tmp`
+- Platform: `linux/arm64`, override with `-Djib-maven-plugin.architecture=amd64` if needed
 
 ## Kubernetes Health Probe
 

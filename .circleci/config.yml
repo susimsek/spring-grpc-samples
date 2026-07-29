@@ -126,6 +126,7 @@ jobs:
             ./mvnw -B -ntp -Pnative -DskipTests \
               -Dspotless.skip=true \
               -Dcheckstyle.skip=true \
+              -Djib-maven-plugin.architecture=amd64 \
               -DbuildArgs="--no-fallback,-Os,--static,--libc=musl,--verbose,-J-Xmx6g" \
               jib:build \
               -Djib.to.image=docker.io/${DOCKERHUB_USERNAME}/spring-grpc-samples:latest-native \

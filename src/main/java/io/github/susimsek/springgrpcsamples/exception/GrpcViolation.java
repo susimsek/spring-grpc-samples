@@ -55,7 +55,9 @@ public record GrpcViolation(Violation violation, String messageCode, Object[] me
         if (object == this) {
             return true;
         }
-        return object instanceof GrpcViolation(Violation violation1, String code, Object[] arguments)
+        return object
+                        instanceof
+                        GrpcViolation(Violation violation1, String code, Object[] arguments)
                 && violation.equals(violation1)
                 && messageCode.equals(code)
                 && Arrays.equals(messageArguments, arguments);

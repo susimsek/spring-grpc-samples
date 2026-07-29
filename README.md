@@ -370,7 +370,7 @@ Native executable:
 Output:
 
 ```text
-target/spring-grpc-samples
+target/native-executable
 ```
 
 JaCoCo report:
@@ -448,7 +448,7 @@ Build the native executable:
 Run it:
 
 ```bash
-./target/spring-grpc-samples
+./target/native-executable
 ```
 
 Then test health:

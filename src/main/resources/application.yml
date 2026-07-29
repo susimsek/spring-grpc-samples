@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: spring-grpc-samples
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+  datasource:
+    url: jdbc:h2:mem:spring-grpc-samples;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  grpc:
+    server:
+      port: 9090
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    contexts: faker
+
+app:
+  security:
+    jwt:
+      issuer: https://auth.spring-grpc-samples.local
+      secret: 852a5e2035c76e5557e9eee52660a2616eb3afb20b299e2fefd37eb70b57b371
+      expires-in: 1h

@@ -1,0 +1,266 @@
+[
+  {
+    "name": "build.buf.validate.AnyRules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.AnyRules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.BoolRules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.BoolRules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.BytesRules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.BytesRules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.DoubleRules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.DoubleRules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.DurationRules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.DurationRules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.EnumRules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.EnumRules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.FieldPath",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.FieldPath$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.FieldPathElement",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.FieldPathElement$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.FieldRules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.FieldRules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Fixed32Rules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Fixed32Rules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Fixed64Rules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Fixed64Rules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.FloatRules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.FloatRules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Ignore",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Ignore$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Int32Rules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Int32Rules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Int64Rules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Int64Rules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.KnownRegex",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.KnownRegex$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.MapRules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.MapRules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.MessageOneofRule",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.MessageOneofRule$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.MessageRules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.MessageRules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.OneofRules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.OneofRules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.PredefinedRules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.PredefinedRules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.RepeatedRules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.RepeatedRules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Rule",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Rule$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.SFixed32Rules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.SFixed32Rules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.SFixed64Rules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.SFixed64Rules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.SInt32Rules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.SInt32Rules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.SInt64Rules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.SInt64Rules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.StringRules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.StringRules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.TimestampRules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.TimestampRules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.UInt32Rules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.UInt32Rules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.UInt64Rules",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.UInt64Rules$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Violation",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Violation$Builder",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Violations",
+    "allPublicMethods": true
+  },
+  {
+    "name": "build.buf.validate.Violations$Builder",
+    "allPublicMethods": true
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "name": "liquibase.change.core.LoadDataChange",
+    "allPublicMethods": true
+  },
+  {
+    "name": "liquibase.change.core.LoadDataColumnConfig",
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  }
+]

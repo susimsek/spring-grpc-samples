@@ -1,16 +1,17 @@
 package io.github.susimsek.springgrpcsamples.exception;
 
 import build.buf.validate.Violation;
-import java.util.Arrays;
+import java.util.List;
 
-public record GrpcViolation(Violation violation, String messageCode, Object[] messageArguments) {
+public record GrpcViolation(
+        Violation violation, String messageCode, List<Object> messageArguments) {
 
     private static final String CUSTOM_RULE_ID_PREFIX = "grpc.";
     private static final String STANDARD_RULE_MESSAGE_CODE_PREFIX = "grpc.validation.constraints.";
     private static final String UNKNOWN_MESSAGE_CODE = "grpc.validation.unknown";
 
     public GrpcViolation {
-        messageArguments = Arrays.copyOf(messageArguments, messageArguments.length);
+        messageArguments = List.copyOf(messageArguments);
     }
 
     public GrpcViolation(Violation violation) {
@@ -27,64 +28,25 @@ public record GrpcViolation(Violation violation, String messageCode, Object[] me
 
     private static Rule resolveRule(Violation violation) {
         if (!violation.hasRuleId()) {
-            return new Rule(violation, UNKNOWN_MESSAGE_CODE, false, new Object[0]);
+            return new Rule(violation, UNKNOWN_MESSAGE_CODE, false, List.of());
         }
         String ruleId = violation.getRuleId();
         boolean standardRule = !ruleId.startsWith(CUSTOM_RULE_ID_PREFIX);
         String messageCode = standardRule ? STANDARD_RULE_MESSAGE_CODE_PREFIX + ruleId : ruleId;
-        return new Rule(violation, messageCode, standardRule, new Object[0]);
+        return new Rule(violation, messageCode, standardRule, List.of());
     }
 
     private static Rule resolveRule(build.buf.protovalidate.Violation violation) {
         Violation protoViolation = violation.toProto();
         Rule rule = resolveRule(protoViolation);
-        Object[] messageArguments =
-                rule.standardRule()
-                        ? new Object[] {violation.getRuleValue().getValue()}
-                        : new Object[0];
+        List<Object> messageArguments =
+                rule.standardRule() ? List.of(violation.getRuleValue().getValue()) : List.of();
         return new Rule(protoViolation, rule.messageCode(), rule.standardRule(), messageArguments);
-    }
-
-    @Override
-    public Object[] messageArguments() {
-        return Arrays.copyOf(messageArguments, messageArguments.length);
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (object == this) {
-            return true;
-        }
-        return object
-                        instanceof
-                        GrpcViolation(Violation violation1, String code, Object[] arguments)
-                && violation.equals(violation1)
-                && messageCode.equals(code)
-                && Arrays.equals(messageArguments, arguments);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = violation.hashCode();
-        result = 31 * result + messageCode.hashCode();
-        result = 31 * result + Arrays.hashCode(messageArguments);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "GrpcViolation[violation="
-                + violation
-                + ", messageCode="
-                + messageCode
-                + ", messageArguments="
-                + Arrays.toString(messageArguments)
-                + "]";
     }
 
     private record Rule(
             Violation violation,
             String messageCode,
             boolean standardRule,
-            Object[] messageArguments) {}
+            List<Object> messageArguments) {}
 }

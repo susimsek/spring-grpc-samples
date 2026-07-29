@@ -31,7 +31,7 @@ public class Authority {
     private String name;
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -54,7 +54,7 @@ public class Authority {
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return this instanceof HibernateProxy
                 ? ((HibernateProxy) this)
                         .getHibernateLazyInitializer()

@@ -1,12 +1,17 @@
 package io.github.susimsek.springgrpcsamples.exception;
 
 import build.buf.validate.Violation;
+import java.util.Arrays;
 
 public record GrpcViolation(Violation violation, String messageCode, Object[] messageArguments) {
 
     private static final String CUSTOM_RULE_ID_PREFIX = "grpc.";
     private static final String STANDARD_RULE_MESSAGE_CODE_PREFIX = "grpc.validation.constraints.";
     private static final String UNKNOWN_MESSAGE_CODE = "grpc.validation.unknown";
+
+    public GrpcViolation {
+        messageArguments = Arrays.copyOf(messageArguments, messageArguments.length);
+    }
 
     public GrpcViolation(Violation violation) {
         this(resolveRule(violation));
@@ -38,6 +43,41 @@ public record GrpcViolation(Violation violation, String messageCode, Object[] me
                         ? new Object[] {violation.getRuleValue().getValue()}
                         : new Object[0];
         return new Rule(protoViolation, rule.messageCode(), rule.standardRule(), messageArguments);
+    }
+
+    @Override
+    public Object[] messageArguments() {
+        return Arrays.copyOf(messageArguments, messageArguments.length);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == this) {
+            return true;
+        }
+        return object instanceof GrpcViolation other
+                && violation.equals(other.violation)
+                && messageCode.equals(other.messageCode)
+                && Arrays.equals(messageArguments, other.messageArguments);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = violation.hashCode();
+        result = 31 * result + messageCode.hashCode();
+        result = 31 * result + Arrays.hashCode(messageArguments);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "GrpcViolation[violation="
+                + violation
+                + ", messageCode="
+                + messageCode
+                + ", messageArguments="
+                + Arrays.toString(messageArguments)
+                + "]";
     }
 
     private record Rule(

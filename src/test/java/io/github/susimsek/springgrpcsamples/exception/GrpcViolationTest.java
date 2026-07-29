@@ -1,6 +1,8 @@
 package io.github.susimsek.springgrpcsamples.exception;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import build.buf.protovalidate.ValidationResult;
 import build.buf.protovalidate.Validator;
@@ -50,17 +52,39 @@ class GrpcViolationTest {
     }
 
     @Test
+    void doesNotExposeRuleValueArgumentForCustomProtovalidateViolation() {
+        build.buf.protovalidate.Violation protoViolation =
+                mock(build.buf.protovalidate.Violation.class);
+        when(protoViolation.toProto())
+                .thenReturn(Violation.newBuilder().setRuleId("grpc.validation.custom").build());
+
+        GrpcViolation violation = new GrpcViolation(protoViolation);
+
+        assertThat(violation.messageCode()).isEqualTo("grpc.validation.custom");
+        assertThat(violation.messageArguments()).isEmpty();
+    }
+
+    @Test
     void equalsAndHashCodeUseArrayContent() {
         Violation proto = Violation.newBuilder().setRuleId("string.min_len").build();
         GrpcViolation first = new GrpcViolation(proto, "code", new Object[] {"x", 1});
         GrpcViolation second =
                 new GrpcViolation(proto.toBuilder().build(), "code", new Object[] {"x", 1});
+        GrpcViolation differentViolation =
+                new GrpcViolation(
+                        Violation.newBuilder().setRuleId("string.max_len").build(),
+                        "code",
+                        new Object[] {"x", 1});
+        GrpcViolation differentMessageCode =
+                new GrpcViolation(proto.toBuilder().build(), "other", new Object[] {"x", 1});
         GrpcViolation differentArray =
                 new GrpcViolation(proto.toBuilder().build(), "code", new Object[] {"x", 2});
 
         assertThat(first).isEqualTo(first);
         assertThat(first).isEqualTo(second);
         assertThat(first.hashCode()).isEqualTo(second.hashCode());
+        assertThat(first).isNotEqualTo(differentViolation);
+        assertThat(first).isNotEqualTo(differentMessageCode);
         assertThat(first).isNotEqualTo(differentArray);
         assertThat(first).isNotEqualTo("not-a-violation");
     }

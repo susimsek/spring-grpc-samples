@@ -45,6 +45,18 @@ class GrpcViolationTest {
     }
 
     @Test
+    void resolvesUnknownMessageCodeWhenRuleIdMissingFromProtovalidateViolation() {
+        build.buf.protovalidate.Violation protoViolation =
+                mock(build.buf.protovalidate.Violation.class);
+        when(protoViolation.toProto()).thenReturn(Violation.newBuilder().build());
+
+        GrpcViolation violation = GrpcViolation.from(protoViolation);
+
+        assertThat(violation.messageCode()).isEqualTo("grpc.validation.unknown");
+        assertThat(violation.messageArguments()).isEmpty();
+    }
+
+    @Test
     void resolvesRuleValueArgumentForProtovalidateViolation() {
         build.buf.protovalidate.Violation protoViolation =
                 validate(CreateTodoRequest.newBuilder().setTitle("ab").build())

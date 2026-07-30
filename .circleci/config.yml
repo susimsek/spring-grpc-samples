@@ -99,7 +99,7 @@ jobs:
       - run:
           name: Build GraalVM Native Executable
           command: |
-            ./mvnw -B -ntp -Pnative -DskipTests \
+            ./mvnw -B -ntp -Pprod,native -DskipTests \
               -Dspotless.skip=true \
               -Dcheckstyle.skip=true \
               -DbuildArgs="--no-fallback,-Os,--static,--libc=musl,--verbose,-J-Xmx6g" \
@@ -118,16 +118,7 @@ jobs:
               exit 0
             fi
 
-            if [ -z "${DOCKERHUB_USERNAME}" ] || [ -z "${DOCKERHUB_TOKEN}" ]; then
-              echo "DOCKERHUB_USERNAME or DOCKERHUB_TOKEN not set; skipping Docker image push."
-              exit 0
-            fi
-
-            ./mvnw -B -ntp -Pnative -DskipTests \
-              -Dspotless.skip=true \
-              -Dcheckstyle.skip=true \
-              -Djib-maven-plugin.architecture=amd64 \
-              -DbuildArgs="--no-fallback,-Os,--static,--libc=musl,--verbose,-J-Xmx6g" \
+            ./mvnw -ntp -Pprod,native -DskipTests \
               jib:build \
               -Djib.to.image=docker.io/${DOCKERHUB_USERNAME}/spring-grpc-samples:latest-native \
               -Djib.to.auth.username="${DOCKERHUB_USERNAME}" \

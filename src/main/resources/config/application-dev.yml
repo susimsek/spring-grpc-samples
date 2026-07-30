@@ -1,0 +1,32 @@
+spring:
+  devtools:
+    restart:
+      enabled: true
+  docker:
+    compose:
+      enabled: false
+  datasource:
+    url: jdbc:h2:mem:grpcsamples;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+  liquibase:
+    contexts: dev, faker
+
+app:
+  security:
+    jwt:
+      secret: CDyi/yxfK/EMHtj20eOFoLc0t08WVHotnfcpgpnjdt4=
+      issuer: https://auth.spring-grpc-samples.local
+      expires-in: PT1H
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: DEBUG
+    io.github.susimsek.springgrpcsamples: DEBUG
+
+

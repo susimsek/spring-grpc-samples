@@ -1,0 +1,34 @@
+spring:
+  devtools:
+    restart:
+      enabled: false
+  docker:
+    compose:
+      profiles:
+        active: prod
+  datasource:
+    url: jdbc:postgresql://localhost:5432/grpcsamples
+    username: ${SPRING_DATASOURCE_USERNAME}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+  jpa:
+    show-sql: false
+    properties:
+      hibernate.format_sql: false
+  liquibase:
+    contexts: prod
+
+app:
+  security:
+    jwt:
+      secret: ${SECURITY_JWT_SECRET}
+      issuer: https://auth.spring-grpc-samples.local
+      expires-in: PT30M
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: INFO
+    io.github.susimsek.springgrpcsamples: INFO
+

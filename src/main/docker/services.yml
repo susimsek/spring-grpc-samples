@@ -1,0 +1,11 @@
+# Dev purpose only. DO NOT use in production.
+name: spring-grpc-samples
+
+services:
+  postgresql:
+    extends:
+      file: ./postgresql.yml
+      service: postgresql
+    profiles:
+      - prod
+

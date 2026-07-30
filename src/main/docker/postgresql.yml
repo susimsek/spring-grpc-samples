@@ -1,0 +1,24 @@
+# Dev purpose only. DO NOT use in production.
+name: spring-grpc-samples
+services:
+  postgresql:
+    image: postgres:18-alpine
+    container_name: postgresql
+    environment:
+      POSTGRES_USER: appuser
+      POSTGRES_DB: grpcsamples
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "127.0.0.1:5432:5432"
+    # volumes:
+    #   - postgresql_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+# volumes:
+#   postgresql_data:
+

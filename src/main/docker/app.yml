@@ -1,0 +1,38 @@
+# Dev purpose only. DO NOT use in production.
+name: spring-grpc-samples
+services:
+  app:
+    image: docker.io/susimsek/spring-grpc-samples:latest-native
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/grpcsamples
+      - SPRING_DATASOURCE_USERNAME=appuser
+      - SPRING_LIQUIBASE_ENABLED=false
+      - SECURITY_JWT_SECRET=CDyi/yxfK/EMHtj20eOFoLc0t08WVHotnfcpgpnjdt4=
+    ports:
+      - "127.0.0.1:9090:9090"
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      liquibase:
+        condition: service_completed_successfully
+
+  liquibase:
+    image: docker.io/suayb/liquibase-postgresql:5.0.1
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    environment:
+      - LIQUIBASE_COMMAND_URL=jdbc:postgresql://postgresql:5432/grpcsamples
+      - LIQUIBASE_COMMAND_USERNAME=appuser
+      - LIQUIBASE_COMMAND_CHANGELOG_FILE=db/changelog/db.changelog-master.xml
+    volumes:
+      - ../resources/db:/liquibase/db:ro
+    command:
+      - update
+
+  postgresql:
+    extends:
+      file: ./postgresql.yml
+      service: postgresql
+

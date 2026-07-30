@@ -78,7 +78,26 @@ Important defaults:
 
 The checked-in JWT secret is for local sample use only. Replace it for any real deployment.
 
+## Configuration and Profiles
+
+Configuration lives under `src/main/resources/config`:
+
+- `application.yml` (shared)
+- `application-dev.yml` (H2, debug logs)
+- `application-prod.yml` (PostgreSQL, cache headers)
+
+Maven profiles:
+
+- `dev` (default) — H2 in-memory database, devtools
+- `prod` — PostgreSQL
+- `native` — GraalVM native build + Jib native-image extension
+- `docker-compose` — Spring Boot Docker Compose integration
+
+`spring.profiles.active` in `application.yml` is filled via Maven resource filtering.
+
 ## Run Locally
+
+### Dev (H2)
 
 Start the gRPC server:
 
@@ -92,12 +111,28 @@ The server listens on:
 localhost:9090
 ```
 
-Seeded users:
+### Prod (PostgreSQL)
 
-| Username | Password | Authorities |
-| --- | --- | --- |
-| `admin` | `admin` | `ROLE_ADMIN`, `ROLE_USER` |
-| `user` | `user` | `ROLE_USER` |
+Start PostgreSQL first:
+
+```bash
+docker compose -f src/main/docker/postgresql.yml up -d
+```
+
+Then run the app with the `prod` profile:
+
+```bash
+export APP_SECURITY_JWT_SECRET="$(openssl rand -hex 32)"
+export SPRING_DATASOURCE_USERNAME=appuser
+export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/grpcsamples
+./mvnw -Pprod spring-boot:run
+```
+
+The server listens on:
+
+```text
+localhost:9090
+```
 
 ## API Quick Overview
 
@@ -553,3 +588,32 @@ grpcurl -plaintext \
   localhost:9090 \
   grpc.health.v1.Health/Check
 ```
+
+## Docker Compose Support
+
+Files under `src/main/docker/*.yml` are marked as "dev purpose only".
+
+- PostgreSQL: `docker compose -f src/main/docker/postgresql.yml up -d`
+- App with prebuilt native image: `docker compose -f src/main/docker/app.yml up -d`
+
+Spring Boot Docker Compose integration (optional, starts PostgreSQL automatically):
+
+```bash
+./mvnw -Pprod,docker-compose spring-boot:run
+```
+
+## Continuous Integration
+
+Pipeline: `.circleci/config.yml`
+
+- `./mvnw verify` for backend tests + quality gates
+- `./mvnw -Pprod,native -DskipTests native:compile` for a musl static native build
+- Compress `target/native-executable` with UPX
+- Push the native Docker image to Docker Hub on the `main` branch (via Jib)
+
+Environment variables:
+
+- SonarCloud: `SONAR_TOKEN` (optional)
+- Snyk: `SNYK_TOKEN` (optional)
+- Docker Hub push: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN` (only on `main`)
+

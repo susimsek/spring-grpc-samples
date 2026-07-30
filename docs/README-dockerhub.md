@@ -24,7 +24,38 @@ This image exposes server-side gRPC APIs for authentication and Todo management.
 
 ## How to use this image
 
-### 1. Start the application
+### 1. Start a PostgreSQL server
+
+```bash
+docker run --name postgresql --rm -d \
+  -e POSTGRES_USER=appuser \
+  -e POSTGRES_PASSWORD=appuser \
+  -e POSTGRES_DB=grpcsamples \
+  -p 127.0.0.1:5432:5432 \
+  postgres:18-alpine
+```
+
+### 2. Generate a JWT secret
+
+Generate at least a 256-bit secret:
+
+```bash
+openssl rand -hex 32
+```
+
+### 3. Start the application (prod mode with PostgreSQL)
+
+```bash
+docker run --rm -p 9090:9090 \
+  -e SPRING_PROFILES_ACTIVE=prod \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/grpcsamples \
+  -e SPRING_DATASOURCE_USERNAME=appuser \
+  -e SPRING_DATASOURCE_PASSWORD=appuser \
+  -e APP_SECURITY_JWT_SECRET="<paste-openssl-output>" \
+  suayb/spring-grpc-samples:latest-native
+```
+
+Or with H2 in-memory (no PostgreSQL required):
 
 ```bash
 docker run --rm -p 9090:9090 \
@@ -142,7 +173,7 @@ grpcurl -plaintext \
 | `SPRING_GRPC_SERVER_PORT` | `9090` | gRPC server port |
 | `SPRING_DATASOURCE_URL` | `jdbc:h2:mem:spring-grpc-samples;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false` | JDBC URL |
 | `SPRING_DATASOURCE_USERNAME` | `sa` | Database username |
-| `SPRING_DATASOURCE_PASSWORD` | empty | Database password |
+| `SPRING_DATASOURCE_PASSWORD` | (empty) | Database password |
 | `SPRING_LIQUIBASE_ENABLED` | `true` | Enable or disable Liquibase migrations |
 | `SPRING_LIQUIBASE_CONTEXTS` | `faker` | Liquibase contexts used for sample todo data |
 | `APP_SECURITY_JWT_ISSUER` | `https://auth.spring-grpc-samples.local` | JWT issuer |

@@ -611,7 +611,6 @@ Spring Boot Docker Compose integration (optional, starts PostgreSQL automaticall
 ## Helm
 
 - Chart: `helm/spring-grpc-samples`
-- Monitoring: `helm/monitoring/lgtm.yaml`
 
 Common commands:
 Lint the chart:

@@ -20,7 +20,7 @@ import org.hibernate.proxy.HibernateProxy;
 @AllArgsConstructor
 @Entity
 @Table(name = "authorities")
-public class Authority {
+public class AuthorityEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "authority_seq")
@@ -49,7 +49,7 @@ public class Authority {
         if (thisEffectiveClass != oEffectiveClass) {
             return false;
         }
-        Authority authority = (Authority) o;
+        AuthorityEntity authority = (AuthorityEntity) o;
         return getId() != null && Objects.equals(getId(), authority.getId());
     }
 

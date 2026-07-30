@@ -2,22 +2,22 @@ package io.github.susimsek.springgrpcsamples.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.github.susimsek.springgrpcsamples.domain.HibernateProxySupport.ProxyAuthority;
+import io.github.susimsek.springgrpcsamples.domain.HibernateProxySupport.ProxyAuthorityEntity;
 import org.junit.jupiter.api.Test;
 
-class AuthorityTest {
+class AuthorityEntityTest {
 
     @Test
     void accessorsAndEqualityWork() {
-        Authority authority = new Authority();
+        AuthorityEntity authority = new AuthorityEntity();
 
         authority.setId(1L);
         authority.setName("ROLE_ADMIN");
 
-        Authority same = new Authority(1L, "ROLE_USER");
-        Authority different = new Authority(2L, "ROLE_ADMIN");
-        Authority withoutId = new Authority(null, "ROLE_ADMIN");
-        Authority otherWithoutId = new Authority(null, "ROLE_USER");
+        AuthorityEntity same = new AuthorityEntity(1L, "ROLE_USER");
+        AuthorityEntity different = new AuthorityEntity(2L, "ROLE_ADMIN");
+        AuthorityEntity withoutId = new AuthorityEntity(null, "ROLE_ADMIN");
+        AuthorityEntity otherWithoutId = new AuthorityEntity(null, "ROLE_USER");
 
         assertThat(authority.getId()).isEqualTo(1L);
         assertThat(authority.getName()).isEqualTo("ROLE_ADMIN");
@@ -29,18 +29,18 @@ class AuthorityTest {
                 .isNotEqualTo(otherWithoutId)
                 .isNotEqualTo(null)
                 .isNotEqualTo("authority");
-        assertThat(authority.hashCode()).isEqualTo(Authority.class.hashCode());
+        assertThat(authority.hashCode()).isEqualTo(AuthorityEntity.class.hashCode());
         assertThat(withoutId).isNotEqualTo(authority);
     }
 
     @Test
     void equalitySupportsHibernateProxy() {
-        Authority authority = new Authority(1L, "ROLE_ADMIN");
-        ProxyAuthority proxy = new ProxyAuthority(Authority.class);
+        AuthorityEntity authority = new AuthorityEntity(1L, "ROLE_ADMIN");
+        ProxyAuthorityEntity proxy = new ProxyAuthorityEntity(AuthorityEntity.class);
         proxy.setId(1L);
 
         assertThat(authority).isEqualTo(proxy);
         assertThat(proxy).isEqualTo(authority);
-        assertThat(proxy.hashCode()).isEqualTo(Authority.class.hashCode());
+        assertThat(proxy.hashCode()).isEqualTo(AuthorityEntity.class.hashCode());
     }
 }

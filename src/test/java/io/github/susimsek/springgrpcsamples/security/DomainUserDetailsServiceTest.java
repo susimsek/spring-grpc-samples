@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-import io.github.susimsek.springgrpcsamples.domain.Authority;
-import io.github.susimsek.springgrpcsamples.domain.User;
+import io.github.susimsek.springgrpcsamples.domain.AuthorityEntity;
+import io.github.susimsek.springgrpcsamples.domain.UserEntity;
 import io.github.susimsek.springgrpcsamples.repository.UserRepository;
 import java.util.HashSet;
 import java.util.Optional;
@@ -59,11 +59,11 @@ class DomainUserDetailsServiceTest {
                 .isInstanceOf(UsernameNotFoundException.class);
     }
 
-    private static User user(boolean enabled, String... authorities) {
-        Set<Authority> authoritySet = new HashSet<>();
+    private static UserEntity user(boolean enabled, String... authorities) {
+        Set<AuthorityEntity> authoritySet = new HashSet<>();
         for (int i = 0; i < authorities.length; i++) {
-            authoritySet.add(new Authority((long) i + 1, authorities[i]));
+            authoritySet.add(new AuthorityEntity((long) i + 1, authorities[i]));
         }
-        return new User(1L, "admin", "hash", enabled, authoritySet);
+        return new UserEntity(1L, "admin", "hash", enabled, authoritySet);
     }
 }

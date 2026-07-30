@@ -7,7 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
-import io.github.susimsek.springgrpcsamples.domain.Todo;
+import io.github.susimsek.springgrpcsamples.domain.TodoEntity;
 import io.github.susimsek.springgrpcsamples.exception.TodoNotFoundException;
 import io.github.susimsek.springgrpcsamples.mapper.TodoMapper;
 import io.github.susimsek.springgrpcsamples.proto.CreateTodoRequest;
@@ -48,7 +48,7 @@ class TodoGrpcServiceTest {
 
     @InjectMocks private TodoGrpcService service;
 
-    private Map<Long, Todo> todos;
+    private Map<Long, TodoEntity> todos;
     private long sequence;
     private long auditSequence;
 
@@ -59,7 +59,7 @@ class TodoGrpcServiceTest {
         auditSequence = 1;
 
         lenient()
-                .when(todoRepository.save(any(Todo.class)))
+                .when(todoRepository.save(any(TodoEntity.class)))
                 .thenAnswer(invocation -> saveTodo(invocation.getArgument(0)));
         lenient()
                 .when(todoRepository.findById(anyLong()))
@@ -73,12 +73,12 @@ class TodoGrpcServiceTest {
         lenient()
                 .doAnswer(
                         invocation -> {
-                            Todo todo = invocation.getArgument(0);
+                            TodoEntity todo = invocation.getArgument(0);
                             todos.remove(todo.getId());
                             return null;
                         })
                 .when(todoRepository)
-                .delete(any(Todo.class));
+                .delete(any(TodoEntity.class));
     }
 
     @Test
@@ -105,7 +105,8 @@ class TodoGrpcServiceTest {
     @Test
     void createTodoHandlesUnhandledExceptionsAsInternalStatus() {
         RecordingObserver<TodoResponse> observer = new RecordingObserver<>();
-        when(todoRepository.save(any(Todo.class))).thenThrow(new IllegalStateException("boom"));
+        when(todoRepository.save(any(TodoEntity.class)))
+                .thenThrow(new IllegalStateException("boom"));
 
         assertThatThrownBy(
                         () ->
@@ -353,7 +354,7 @@ class TodoGrpcServiceTest {
         }
     }
 
-    private Todo saveTodo(Todo todo) {
+    private TodoEntity saveTodo(TodoEntity todo) {
         if (todo.getId() == null) {
             todo.setId(sequence++);
         }
@@ -365,12 +366,12 @@ class TodoGrpcServiceTest {
         return todo;
     }
 
-    private Optional<Todo> findTodo(Long id) {
+    private Optional<TodoEntity> findTodo(Long id) {
         return Optional.ofNullable(todos.get(id));
     }
 
-    private Page<Todo> findTodos(Pageable pageable) {
-        List<Todo> values = List.copyOf(todos.values());
+    private Page<TodoEntity> findTodos(Pageable pageable) {
+        List<TodoEntity> values = List.copyOf(todos.values());
         int start = Math.min((int) pageable.getOffset(), values.size());
         int end = Math.min(start + pageable.getPageSize(), values.size());
         return new PageImpl<>(values.subList(start, end), pageable, values.size());

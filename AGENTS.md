@@ -58,7 +58,7 @@ This repo is a Java 25 + Spring Boot 4.1 sample application that exposes a serve
     - `i18n`: gRPC locale resolution from metadata such as `accept-language`
     - `security`: JWT, password encoder, authentication manager, and gRPC security interceptor
     - `validation`: Protovalidate validator/interceptor configuration
-  - `domain`: JPA entities (`Todo`, `User`, `Authority`) and auditing base class
+  - `domain`: JPA entities (`TodoEntity`, `UserEntity`, `AuthorityEntity`) and auditing base class
   - `exception`: gRPC exception model and `@GrpcAdvice` exception mapping
   - `mapper`: MapStruct mappers and protobuf mapping helpers
   - `repository`: Spring Data JPA repositories
@@ -100,9 +100,9 @@ This repo is a Java 25 + Spring Boot 4.1 sample application that exposes a serve
 
 - Unit tests live under `src/test/java` and use singular class names ending with `Test`.
 - Keep test class names class-based, for example:
-  - `TodoTest`
-  - `UserTest`
-  - `AuthorityTest`
+  - `TodoEntityTest`
+  - `UserEntityTTest`
+  - `AuthorityEntityTTest`
   - `TodoMapperTest`
   - `TodoGrpcServiceTest`
 - Maintain 100% JaCoCo line and instruction coverage for handwritten application code.

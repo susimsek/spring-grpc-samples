@@ -16,11 +16,11 @@ final class HibernateProxySupport {
         return lazyInitializer;
     }
 
-    static final class ProxyTodo extends Todo implements HibernateProxy {
+    static final class ProxyTodoEntity extends TodoEntity implements HibernateProxy {
 
         private final LazyInitializer lazyInitializer;
 
-        ProxyTodo(Class<?> persistentClass) {
+        ProxyTodoEntity(Class<?> persistentClass) {
             this.lazyInitializer = lazyInitializer(persistentClass);
         }
 
@@ -35,11 +35,11 @@ final class HibernateProxySupport {
         }
     }
 
-    static final class ProxyUser extends User implements HibernateProxy {
+    static final class ProxyUserEntity extends UserEntity implements HibernateProxy {
 
         private final LazyInitializer lazyInitializer;
 
-        ProxyUser(Class<?> persistentClass) {
+        ProxyUserEntity(Class<?> persistentClass) {
             this.lazyInitializer = lazyInitializer(persistentClass);
         }
 
@@ -54,11 +54,11 @@ final class HibernateProxySupport {
         }
     }
 
-    static final class ProxyAuthority extends Authority implements HibernateProxy {
+    static final class ProxyAuthorityEntity extends AuthorityEntity implements HibernateProxy {
 
         private final LazyInitializer lazyInitializer;
 
-        ProxyAuthority(Class<?> persistentClass) {
+        ProxyAuthorityEntity(Class<?> persistentClass) {
             this.lazyInitializer = lazyInitializer(persistentClass);
         }
 

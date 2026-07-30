@@ -20,7 +20,7 @@ import org.hibernate.proxy.HibernateProxy;
 @AllArgsConstructor
 @Entity
 @Table(name = "todos")
-public class Todo extends AuditableEntity {
+public class TodoEntity extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "todo_seq")
@@ -52,7 +52,7 @@ public class Todo extends AuditableEntity {
         if (thisEffectiveClass != oEffectiveClass) {
             return false;
         }
-        Todo todo = (Todo) o;
+        TodoEntity todo = (TodoEntity) o;
         return getId() != null && Objects.equals(getId(), todo.getId());
     }
 

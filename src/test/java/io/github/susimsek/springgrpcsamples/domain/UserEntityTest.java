@@ -2,19 +2,19 @@ package io.github.susimsek.springgrpcsamples.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.github.susimsek.springgrpcsamples.domain.HibernateProxySupport.ProxyUser;
+import io.github.susimsek.springgrpcsamples.domain.HibernateProxySupport.ProxyUserEntity;
 import java.time.Instant;
 import java.util.HashSet;
 import org.junit.jupiter.api.Test;
 
-class UserTest {
+class UserEntityTest {
 
     @Test
     void accessorsAndEqualityWork() {
-        Authority authority = new Authority(1L, "ROLE_USER");
-        HashSet<Authority> authorities = new HashSet<>();
+        AuthorityEntity authority = new AuthorityEntity(1L, "ROLE_USER");
+        HashSet<AuthorityEntity> authorities = new HashSet<>();
         authorities.add(authority);
-        User user = new User();
+        UserEntity user = new UserEntity();
         Instant createdAt = Instant.EPOCH;
         Instant updatedAt = Instant.EPOCH.plusSeconds(1);
 
@@ -26,10 +26,10 @@ class UserTest {
         user.setCreatedAt(createdAt);
         user.setUpdatedAt(updatedAt);
 
-        User same = new User(1L, "other", "other", false, new HashSet<>());
-        User different = new User(2L, "admin", "secret", true, authorities);
-        User withoutId = new User(null, "admin", "secret", true, authorities);
-        User otherWithoutId = new User(null, "other", "other", false, new HashSet<>());
+        UserEntity same = new UserEntity(1L, "other", "other", false, new HashSet<>());
+        UserEntity different = new UserEntity(2L, "admin", "secret", true, authorities);
+        UserEntity withoutId = new UserEntity(null, "admin", "secret", true, authorities);
+        UserEntity otherWithoutId = new UserEntity(null, "other", "other", false, new HashSet<>());
 
         assertThat(user.getId()).isEqualTo(1L);
         assertThat(user.getUsername()).isEqualTo("admin");
@@ -38,7 +38,7 @@ class UserTest {
         assertThat(user.getAuthorities()).containsExactly(authority);
         assertThat(user.getCreatedAt()).isEqualTo(createdAt);
         assertThat(user.getUpdatedAt()).isEqualTo(updatedAt);
-        assertThat(new User().getAuthorities()).isEmpty();
+        assertThat(new UserEntity().getAuthorities()).isEmpty();
         assertThat(user)
                 .isEqualTo(user)
                 .isEqualTo(same)
@@ -47,18 +47,18 @@ class UserTest {
                 .isNotEqualTo(otherWithoutId)
                 .isNotEqualTo(null)
                 .isNotEqualTo("user");
-        assertThat(user.hashCode()).isEqualTo(User.class.hashCode());
+        assertThat(user.hashCode()).isEqualTo(UserEntity.class.hashCode());
         assertThat(withoutId).isNotEqualTo(user);
     }
 
     @Test
     void equalitySupportsHibernateProxy() {
-        User user = new User(1L, "admin", "secret", true, new HashSet<>());
-        ProxyUser proxy = new ProxyUser(User.class);
+        UserEntity user = new UserEntity(1L, "admin", "secret", true, new HashSet<>());
+        ProxyUserEntity proxy = new ProxyUserEntity(UserEntity.class);
         proxy.setId(1L);
 
         assertThat(user).isEqualTo(proxy);
         assertThat(proxy).isEqualTo(user);
-        assertThat(proxy.hashCode()).isEqualTo(User.class.hashCode());
+        assertThat(proxy.hashCode()).isEqualTo(UserEntity.class.hashCode());
     }
 }

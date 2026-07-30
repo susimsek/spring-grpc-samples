@@ -2,7 +2,7 @@ package io.github.susimsek.springgrpcsamples.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.github.susimsek.springgrpcsamples.domain.Todo;
+import io.github.susimsek.springgrpcsamples.domain.TodoEntity;
 import io.github.susimsek.springgrpcsamples.proto.CreateTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.PatchTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.TodoResponse;
@@ -17,7 +17,7 @@ class TodoMapperTest {
 
     @Test
     void mapsCreateTodoRequestToEntity() {
-        Todo todo =
+        TodoEntity todo =
                 mapper.toEntity(CreateTodoRequest.newBuilder().setTitle("Mapped title").build());
 
         assertThat(todo.getId()).isNull();
@@ -29,7 +29,7 @@ class TodoMapperTest {
 
     @Test
     void updatesEntityFromUpdateTodoRequest() {
-        Todo todo = new Todo(1L, "Old title", false);
+        TodoEntity todo = new TodoEntity(1L, "Old title", false);
         todo.setCreatedAt(Instant.EPOCH);
         todo.setUpdatedAt(Instant.EPOCH);
 
@@ -50,7 +50,7 @@ class TodoMapperTest {
 
     @Test
     void partiallyUpdatesOnlyPresentPatchFields() {
-        Todo todo = new Todo(1L, "Old title", false);
+        TodoEntity todo = new TodoEntity(1L, "Old title", false);
 
         mapper.partialUpdate(
                 PatchTodoRequest.newBuilder().setId(1L).setCompleted(true).build(), todo);
@@ -61,7 +61,7 @@ class TodoMapperTest {
 
     @Test
     void mapsTodoToResponseWithTimestamps() {
-        Todo todo = new Todo(1L, "Mapped title", true);
+        TodoEntity todo = new TodoEntity(1L, "Mapped title", true);
         todo.setCreatedAt(Instant.EPOCH);
         todo.setUpdatedAt(Instant.EPOCH.plusSeconds(1));
 
@@ -76,7 +76,7 @@ class TodoMapperTest {
 
     @Test
     void mapsTodoToResponseWithoutTimestamps() {
-        TodoResponse response = mapper.toResponse(new Todo(1L, "Mapped title", false));
+        TodoResponse response = mapper.toResponse(new TodoEntity(1L, "Mapped title", false));
 
         assertThat(response.hasCreatedAt()).isFalse();
         assertThat(response.hasUpdatedAt()).isFalse();

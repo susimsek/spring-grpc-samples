@@ -30,7 +30,7 @@ import org.hibernate.proxy.HibernateProxy;
 @NamedEntityGraph(
         name = "User.withAuthorities",
         attributeNodes = @NamedAttributeNode("authorities"))
-public class User extends AuditableEntity {
+public class UserEntity extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
@@ -51,7 +51,7 @@ public class User extends AuditableEntity {
             name = "user_authorities",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id"))
-    private Set<Authority> authorities = new HashSet<>();
+    private Set<AuthorityEntity> authorities = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
@@ -72,7 +72,7 @@ public class User extends AuditableEntity {
         if (thisEffectiveClass != oEffectiveClass) {
             return false;
         }
-        User user = (User) o;
+        UserEntity user = (UserEntity) o;
         return getId() != null && Objects.equals(getId(), user.getId());
     }
 

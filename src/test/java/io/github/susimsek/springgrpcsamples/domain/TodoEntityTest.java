@@ -2,15 +2,15 @@ package io.github.susimsek.springgrpcsamples.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.github.susimsek.springgrpcsamples.domain.HibernateProxySupport.ProxyTodo;
+import io.github.susimsek.springgrpcsamples.domain.HibernateProxySupport.ProxyTodoEntity;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
-class TodoTest {
+class TodoEntityTest {
 
     @Test
     void accessorsAndEqualityWork() {
-        Todo todo = new Todo();
+        TodoEntity todo = new TodoEntity();
         Instant createdAt = Instant.EPOCH;
         Instant updatedAt = Instant.EPOCH.plusSeconds(1);
 
@@ -20,10 +20,10 @@ class TodoTest {
         todo.setCreatedAt(createdAt);
         todo.setUpdatedAt(updatedAt);
 
-        Todo same = new Todo(1L, "Other", false);
-        Todo different = new Todo(2L, "Title", true);
-        Todo withoutId = new Todo(null, "Title", true);
-        Todo otherWithoutId = new Todo(null, "Other", false);
+        TodoEntity same = new TodoEntity(1L, "Other", false);
+        TodoEntity different = new TodoEntity(2L, "Title", true);
+        TodoEntity withoutId = new TodoEntity(null, "Title", true);
+        TodoEntity otherWithoutId = new TodoEntity(null, "Other", false);
 
         assertThat(todo.getId()).isEqualTo(1L);
         assertThat(todo.getTitle()).isEqualTo("Title");
@@ -38,18 +38,18 @@ class TodoTest {
                 .isNotEqualTo(otherWithoutId)
                 .isNotEqualTo(null)
                 .isNotEqualTo("todo");
-        assertThat(todo.hashCode()).isEqualTo(Todo.class.hashCode());
+        assertThat(todo.hashCode()).isEqualTo(TodoEntity.class.hashCode());
         assertThat(withoutId).isNotEqualTo(todo);
     }
 
     @Test
     void equalitySupportsHibernateProxy() {
-        Todo todo = new Todo(1L, "Title", false);
-        ProxyTodo proxy = new ProxyTodo(Todo.class);
+        TodoEntity todo = new TodoEntity(1L, "Title", false);
+        ProxyTodoEntity proxy = new ProxyTodoEntity(TodoEntity.class);
         proxy.setId(1L);
 
         assertThat(todo).isEqualTo(proxy);
         assertThat(proxy).isEqualTo(todo);
-        assertThat(proxy.hashCode()).isEqualTo(Todo.class.hashCode());
+        assertThat(proxy.hashCode()).isEqualTo(TodoEntity.class.hashCode());
     }
 }

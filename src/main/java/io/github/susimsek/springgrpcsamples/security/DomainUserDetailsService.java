@@ -1,5 +1,6 @@
 package io.github.susimsek.springgrpcsamples.security;
 
+import io.github.susimsek.springgrpcsamples.domain.UserEntity;
 import io.github.susimsek.springgrpcsamples.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -30,7 +31,7 @@ public class DomainUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("user not found"));
     }
 
-    private static String[] authorities(io.github.susimsek.springgrpcsamples.domain.User user) {
+    private static String[] authorities(UserEntity user) {
         return user.getAuthorities().stream()
                 .map(authority -> authority.getName())
                 .toArray(String[]::new);

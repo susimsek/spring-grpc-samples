@@ -2,7 +2,7 @@
 name: spring-grpc-samples
 services:
   app:
-    image: docker.io/susimsek/spring-grpc-samples:latest-native
+    image: docker.io/suayb/spring-grpc-samples:latest-native
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/grpcsamples

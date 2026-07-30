@@ -10,6 +10,8 @@
 [![GraalVM](https://img.shields.io/badge/GraalVM-25%2B-F08820?logo=graalvm)](https://www.graalvm.org/)
 [![gRPC](https://img.shields.io/badge/gRPC-High%20Performance-00ADD8?logo=grpc)](https://grpc.io/)
 [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker)](https://www.docker.com/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-Orchestration-326CE5?logo=kubernetes&logoColor=white)](https://kubernetes.io/)
+[![Helm](https://img.shields.io/badge/Helm-Charts-0F1689?logo=helm)](https://helm.sh/)
 
 This repository is a server-side Todo sample application built with Spring Boot 4.1 + Spring gRPC + Spring Data JPA + Liquibase on Java 25. It exposes gRPC APIs for authentication and Todo CRUD, stores data in an H2 in-memory database, validates protobuf requests with Protovalidate, returns localized gRPC errors, and can be compiled as a GraalVM native executable.
 

@@ -51,7 +51,7 @@ docker run --rm -p 9090:9090 \
   -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/grpcsamples \
   -e SPRING_DATASOURCE_USERNAME=appuser \
   -e SPRING_DATASOURCE_PASSWORD=appuser \
-  -e APP_SECURITY_JWT_SECRET="<paste-openssl-output>" \
+  -e SECURITY_JWT_SECRET="<paste-openssl-output>" \
   suayb/spring-grpc-samples:latest-native
 ```
 
@@ -59,7 +59,7 @@ Or with H2 in-memory (no PostgreSQL required):
 
 ```bash
 docker run --rm -p 9090:9090 \
-  -e APP_SECURITY_JWT_SECRET="$(openssl rand -hex 32)" \
+  -e SECURITY_JWT_SECRET="$(openssl rand -hex 32)" \
   suayb/spring-grpc-samples:latest-native
 ```
 
@@ -177,7 +177,7 @@ grpcurl -plaintext \
 | `SPRING_LIQUIBASE_ENABLED` | `true` | Enable or disable Liquibase migrations |
 | `SPRING_LIQUIBASE_CONTEXTS` | `faker` | Liquibase contexts used for sample todo data |
 | `APP_SECURITY_JWT_ISSUER` | `https://auth.spring-grpc-samples.local` | JWT issuer |
-| `APP_SECURITY_JWT_SECRET` | local sample secret | JWT HMAC secret; replace for every real deployment |
+| `SECURITY_JWT_SECRET` | local sample secret | JWT HMAC secret; replace for every real deployment |
 | `APP_SECURITY_JWT_EXPIRES_IN` | `1h` | Access token lifetime |
 
 Generate a 256-bit JWT secret:

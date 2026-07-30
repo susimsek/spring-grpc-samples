@@ -128,7 +128,7 @@ docker compose -f src/main/docker/postgresql.yml up -d
 Then run the app with the `prod` profile:
 
 ```bash
-export APP_SECURITY_JWT_SECRET="$(openssl rand -hex 32)"
+export SECURITY_JWT_SECRET="$(openssl rand -hex 32)"
 export SPRING_DATASOURCE_USERNAME=appuser
 export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/grpcsamples
 ./mvnw -Pprod spring-boot:run

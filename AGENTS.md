@@ -167,7 +167,7 @@ grpcurl -plaintext \
 - JWT authorities are stored in the `auth` claim. Use `SecurityUtils.AUTHORITIES_CLAIM`.
 - Seeded users for local dev: `admin/admin` (ROLE_ADMIN + ROLE_USER), `user/user` (ROLE_USER only).
 - JWT is sent as `Authorization: Bearer <token>` gRPC metadata.
-- `prod` requires `APP_SECURITY_JWT_SECRET` (at least 256-bit, e.g. `openssl rand -hex 32`).
+- `prod` requires `SECURITY_JWT_SECRET` (at least 256-bit, e.g. `openssl rand -hex 32`).
 - The checked-in JWT secret is for local sample use only; never commit real secrets.
 - Todo APIs should stay secured, but should not require admin globally for every possible service. Current rule: `TodoService/*` requires `ROLE_ADMIN`; all other non-public calls require authentication.
 - Keep constants in `AuthoritiesConstants`.

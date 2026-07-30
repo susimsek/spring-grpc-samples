@@ -74,6 +74,7 @@ This repo is a Java 25 + Spring Boot 4.1 sample application that exposes a serve
   - Default English: `src/main/resources/i18n/messages.properties`
   - Turkish: `src/main/resources/i18n/messages_tr.properties`
 - Docker compose: `src/main/docker/*.yml`
+- Helm chart: `helm/spring-grpc-samples`
 - Tests: `src/test/java`
 
 

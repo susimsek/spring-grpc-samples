@@ -1,0 +1,198 @@
+# Default values for spring-grpc-samples.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+replicaCount: 2
+terminationGracePeriodSeconds: 30
+revisionHistoryLimit: 10
+
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+image:
+  repository: docker.io/suayb/spring-grpc-samples
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest-native"
+
+initContainers:
+  waitForDb:
+    enabled: true
+    image:
+      repository: busybox
+      pullPolicy: IfNotPresent
+      tag: "1.37.0"
+  liquibase:
+    enabled: true
+    image:
+      repository: docker.io/suayb/liquibase-postgresql
+      pullPolicy: IfNotPresent
+      tag: "5.0.1"
+    changeLogFile: db/changelog/db.changelog-master.xml
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+containerPort: 9090
+
+# Application environment variables
+spring:
+  profiles:
+    active: prod
+  datasource:
+    url: jdbc:postgresql://postgresql:5432/grpcsamples
+    username: appuser
+    password: "V5tDoPwOjIkoFLmO9X3W/l9VnfTVoXYo"
+  liquibase:
+    enabled: false
+
+security:
+  jwt:
+    secret: "GOnGieF8gvSk01KtlZUwkpQB8U4tZWTrSt/BJm0+2Mk="
+
+# Recommended: store secrets in an existing Kubernetes Secret and reference it from templates.
+# The templates should mount all keys from this Secret via envFrom.
+existingSecret:
+  enabled: false
+  name: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations:
+    # nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+dnsPolicy: ""
+dnsConfig: {}
+
+enableServiceLinks: true
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 9090
+
+probes:
+  startup:
+    enabled: false
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 10
+  liveness:
+    enabled: true
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+  readiness:
+    enabled: true
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+
+ingress:
+  enabled: false
+  className: ""
+  annotations:
+    # nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "256Mi"
+  limits:
+    cpu: "1"
+    memory: "512Mi"
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+  # Suggested defaults for GraalVM native (~3s startup): scale up quickly, scale down slowly.
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      selectPolicy: Max
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 60
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      selectPolicy: Max
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 300
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+postgresql:
+  fullnameOverride: postgresql
+  enabled: true
+  architecture: standalone
+  auth:
+    username: appuser
+    database: grpcsamples
+    password: "V5tDoPwOjIkoFLmO9X3W/l9VnfTVoXYo"
+    existingSecret: ""
+    secretKeys:
+      userPasswordKey: password
+
+  primary:
+    networkPolicy:
+      enabled: false
+    persistence:
+      enabled: false
+      size: 8Gi
+
+  metrics:
+    enabled: false
+
+  backup:
+    enabled: false

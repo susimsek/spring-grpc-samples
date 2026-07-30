@@ -1,0 +1,19 @@
+{{- if .Values.initContainers.liquibase.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "spring-grpc-samples.fullname" . }}-liquibase
+  labels:
+    {{ include "spring-grpc-samples.labels" . | nindent 4 }}
+data:
+  db.changelog-master.xml: |-
+{{ .Files.Get "liquibase/changelog/db.changelog-master.xml" | indent 4 }}
+{{- range $path, $_ := .Files.Glob "liquibase/changelog/changes/*.xml" }}
+  {{ base $path }}: |-
+{{ $.Files.Get $path | indent 4 }}
+{{- end }}
+{{- range $path, $_ := .Files.Glob "liquibase/data/*.csv" }}
+  {{ base $path }}: |-
+{{ $.Files.Get $path | indent 4 }}
+{{- end }}
+{{- end }}

@@ -40,7 +40,8 @@ There is no gRPC client module in this project.
 - Optional:
   - `grpcurl`
   - `jq`
-  - GraalVM Native Image for native builds
+  - Docker (for Jib, docker-compose, Helm)
+  - GraalVM Native Image (for native builds)
 
 ## Project Layout
 
@@ -60,6 +61,8 @@ There is no gRPC client module in this project.
 - Liquibase: `src/main/resources/db/changelog`
 - Seed data: `src/main/resources/db/data`
 - i18n messages: `src/main/resources/i18n`
+- Docker compose files: `src/main/docker`
+- Helm chart: `helm/spring-grpc-samples`
 - Tests: `src/test/java`
 
 ## Configuration
@@ -600,6 +603,48 @@ Spring Boot Docker Compose integration (optional, starts PostgreSQL automaticall
 
 ```bash
 ./mvnw -Pprod,docker-compose spring-boot:run
+```
+
+## Helm
+
+- Chart: `helm/spring-grpc-samples`
+- Monitoring: `helm/monitoring/lgtm.yaml`
+
+Common commands:
+Lint the chart:
+
+```bash
+helm lint helm/spring-grpc-samples
+```
+
+Render manifests locally:
+
+```bash
+helm template spring-grpc-samples helm/spring-grpc-samples
+```
+
+Create namespace (idempotent):
+
+```bash
+kubectl create namespace spring-grpc-samples --dry-run=client -o yaml | kubectl apply -f -
+```
+
+Install/upgrade release:
+
+```bash
+helm upgrade --install spring-grpc-samples helm/spring-grpc-samples -n spring-grpc-samples
+```
+
+Install/upgrade with values override:
+
+```bash
+helm upgrade --install spring-grpc-samples helm/spring-grpc-samples -n spring-grpc-samples -f helm/spring-grpc-samples/values.yaml
+```
+
+Uninstall release:
+
+```bash
+helm uninstall spring-grpc-samples -n spring-grpc-samples
 ```
 
 ## Continuous Integration

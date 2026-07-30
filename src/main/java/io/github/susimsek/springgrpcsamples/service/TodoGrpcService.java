@@ -8,10 +8,10 @@ import io.github.susimsek.springgrpcsamples.proto.DeleteTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.DeleteTodoResponse;
 import io.github.susimsek.springgrpcsamples.proto.GetTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.ListTodosRequest;
-import io.github.susimsek.springgrpcsamples.proto.ListTodosResponse;
 import io.github.susimsek.springgrpcsamples.proto.PatchTodoRequest;
-import io.github.susimsek.springgrpcsamples.proto.TodoApiGrpc;
-import io.github.susimsek.springgrpcsamples.proto.TodoResponse;
+import io.github.susimsek.springgrpcsamples.proto.Todo;
+import io.github.susimsek.springgrpcsamples.proto.TodoList;
+import io.github.susimsek.springgrpcsamples.proto.TodoServiceGrpc;
 import io.github.susimsek.springgrpcsamples.proto.UpdateTodoRequest;
 import io.github.susimsek.springgrpcsamples.repository.TodoRepository;
 import io.grpc.stub.StreamObserver;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class TodoGrpcService extends TodoApiGrpc.TodoApiImplBase {
+public class TodoGrpcService extends TodoServiceGrpc.TodoServiceImplBase {
 
     private static final int DEFAULT_PAGE_SIZE = 20;
 
@@ -30,58 +30,55 @@ public class TodoGrpcService extends TodoApiGrpc.TodoApiImplBase {
     private final TodoMapper todoMapper;
 
     @Override
-    public void createTodo(
-            CreateTodoRequest request, StreamObserver<TodoResponse> responseObserver) {
+    public void createTodo(CreateTodoRequest request, StreamObserver<Todo> responseObserver) {
         TodoEntity created = todoRepository.save(todoMapper.toEntity(request));
-        responseObserver.onNext(todoMapper.toResponse(created));
+        responseObserver.onNext(todoMapper.toProto(created));
         responseObserver.onCompleted();
     }
 
     @Override
-    public void getTodo(GetTodoRequest request, StreamObserver<TodoResponse> responseObserver) {
+    public void getTodo(GetTodoRequest request, StreamObserver<Todo> responseObserver) {
         TodoEntity todo = findTodo(request.getId());
 
-        responseObserver.onNext(todoMapper.toResponse(todo));
+        responseObserver.onNext(todoMapper.toProto(todo));
         responseObserver.onCompleted();
     }
 
     @Override
-    public void listTodos(
-            ListTodosRequest request, StreamObserver<ListTodosResponse> responseObserver) {
+    public void listTodos(ListTodosRequest request, StreamObserver<TodoList> responseObserver) {
         int pageSize = request.getSize() == 0 ? DEFAULT_PAGE_SIZE : request.getSize();
 
         Page<TodoEntity> page = todoRepository.findAll(PageRequest.of(request.getPage(), pageSize));
-        ListTodosResponse.Builder response =
-                ListTodosResponse.newBuilder()
+        TodoList.Builder response =
+                TodoList.newBuilder()
                         .setPage(page.getNumber())
                         .setSize(page.getSize())
                         .setTotalElements(page.getTotalElements())
                         .setTotalPages(page.getTotalPages())
                         .setFirst(page.isFirst())
                         .setLast(page.isLast());
-        page.stream().map(todoMapper::toResponse).forEach(response::addItems);
+        page.stream().map(todoMapper::toProto).forEach(response::addItems);
         responseObserver.onNext(response.build());
         responseObserver.onCompleted();
     }
 
     @Override
-    public void updateTodo(
-            UpdateTodoRequest request, StreamObserver<TodoResponse> responseObserver) {
+    public void updateTodo(UpdateTodoRequest request, StreamObserver<Todo> responseObserver) {
         TodoEntity updated = findTodo(request.getId());
 
-        todoMapper.update(request, updated);
+        todoMapper.updateEntity(request, updated);
         updated = todoRepository.save(updated);
-        responseObserver.onNext(todoMapper.toResponse(updated));
+        responseObserver.onNext(todoMapper.toProto(updated));
         responseObserver.onCompleted();
     }
 
     @Override
-    public void patchTodo(PatchTodoRequest request, StreamObserver<TodoResponse> responseObserver) {
+    public void patchTodo(PatchTodoRequest request, StreamObserver<Todo> responseObserver) {
         TodoEntity existing = findTodo(request.getId());
-        todoMapper.partialUpdate(request, existing);
+        todoMapper.patchEntity(request, existing);
         TodoEntity patched = todoRepository.save(existing);
 
-        responseObserver.onNext(todoMapper.toResponse(patched));
+        responseObserver.onNext(todoMapper.toProto(patched));
         responseObserver.onCompleted();
     }
 

@@ -23,7 +23,7 @@ There is no gRPC client module in this project.
 - Todo CRUD over gRPC
 - Pageable `ListTodos`
 - JWT login with Spring Security OAuth2 Resource Server
-- `ROLE_ADMIN` authorization for `TodoApi/*`
+- `ROLE_ADMIN` authorization for `TodoService/*`
 - H2 in-memory database in PostgreSQL compatibility mode
 - XML-based Liquibase schema migrations
 - CSV seed data with fake Todo rows under Liquibase context `faker`
@@ -59,7 +59,7 @@ There is no gRPC client module in this project.
   - `repository`: Spring Data JPA repositories
   - `security`: JWT service, user details service, constants, utilities
   - `service`: gRPC service implementations
-- Protobuf contract: `src/main/proto/todo.proto`
+- Protobuf contract: `src/main/proto`
 - Configuration: `src/main/resources/application.yml`
 - Liquibase: `src/main/resources/db/changelog`
 - Seed data: `src/main/resources/db/data`
@@ -144,16 +144,16 @@ localhost:9090
 
 Auth:
 
-- `AuthApi/Login`
+- `AuthService/Login`
 
 Todos:
 
-- `TodoApi/CreateTodo`
-- `TodoApi/GetTodo`
-- `TodoApi/ListTodos`
-- `TodoApi/UpdateTodo`
-- `TodoApi/PatchTodo`
-- `TodoApi/DeleteTodo`
+- `TodoService/CreateTodo`
+- `TodoService/GetTodo`
+- `TodoService/ListTodos`
+- `TodoService/UpdateTodo`
+- `TodoService/PatchTodo`
+- `TodoService/DeleteTodo`
 
 Infrastructure:
 
@@ -162,17 +162,17 @@ Infrastructure:
 
 Security:
 
-- `AuthApi/Login` is public.
+- `AuthService/Login` is public.
 - `grpc.*/*` infrastructure calls are public.
-- `TodoApi/*` requires `ROLE_ADMIN`.
+- `TodoService/*` requires `ROLE_ADMIN`.
 - Other non-public calls require authentication.
 
-## gRPC Contract
+## gRPC Contracts
 
-The protobuf contract is in:
+The protobuf contracts are located in:
 
 ```text
-src/main/proto/todo.proto
+src/main/proto
 ```
 
 Generated Java classes use:
@@ -181,7 +181,7 @@ Generated Java classes use:
 io.github.susimsek.springgrpcsamples.proto
 ```
 
-After changing the proto file, regenerate sources:
+After changing any `.proto` file, regenerate the sources:
 
 ```bash
 ./mvnw generate-sources
@@ -200,8 +200,8 @@ grpcurl -plaintext localhost:9090 list
 Expected services include:
 
 ```text
-AuthApi
-TodoApi
+AuthService
+TodoService
 grpc.health.v1.Health
 grpc.reflection.v1.ServerReflection
 ```
@@ -221,7 +221,7 @@ Login as admin:
 TOKEN=$(grpcurl -plaintext \
   -d '{"username":"admin","password":"admin"}' \
   localhost:9090 \
-  AuthApi/Login | jq -r '.access_token')
+  AuthService/Login | jq -r '.access_token')
 
 echo "$TOKEN"
 ```
@@ -233,7 +233,7 @@ grpcurl -plaintext \
   -rpc-header "authorization: Bearer ${TOKEN}" \
   -d '{"page":0,"size":5}' \
   localhost:9090 \
-  TodoApi/ListTodos
+  TodoService/ListTodos
 ```
 
 Create todo:
@@ -243,7 +243,7 @@ grpcurl -plaintext \
   -rpc-header "authorization: Bearer ${TOKEN}" \
   -d '{"title":"Write README"}' \
   localhost:9090 \
-  TodoApi/CreateTodo
+  TodoService/CreateTodo
 ```
 
 Get todo:
@@ -253,7 +253,7 @@ grpcurl -plaintext \
   -rpc-header "authorization: Bearer ${TOKEN}" \
   -d '{"id":1}' \
   localhost:9090 \
-  TodoApi/GetTodo
+  TodoService/GetTodo
 ```
 
 Update todo:
@@ -263,7 +263,7 @@ grpcurl -plaintext \
   -rpc-header "authorization: Bearer ${TOKEN}" \
   -d '{"id":1,"title":"Update README","completed":true}' \
   localhost:9090 \
-  TodoApi/UpdateTodo
+  TodoService/UpdateTodo
 ```
 
 Patch todo:
@@ -273,7 +273,7 @@ grpcurl -plaintext \
   -rpc-header "authorization: Bearer ${TOKEN}" \
   -d '{"id":1,"completed":false}' \
   localhost:9090 \
-  TodoApi/PatchTodo
+  TodoService/PatchTodo
 ```
 
 Delete todo:
@@ -283,7 +283,7 @@ grpcurl -plaintext \
   -rpc-header "authorization: Bearer ${TOKEN}" \
   -d '{"id":1}' \
   localhost:9090 \
-  TodoApi/DeleteTodo
+  TodoService/DeleteTodo
 ```
 
 Invalid token example:
@@ -294,7 +294,7 @@ grpcurl -plaintext \
   -rpc-header "accept-language: tr" \
   -d '{"page":0,"size":5}' \
   localhost:9090 \
-  TodoApi/ListTodos
+  TodoService/ListTodos
 ```
 
 Access denied example with `ROLE_USER`:
@@ -303,14 +303,14 @@ Access denied example with `ROLE_USER`:
 USER_TOKEN=$(grpcurl -plaintext \
   -d '{"username":"user","password":"user"}' \
   localhost:9090 \
-  AuthApi/Login | jq -r '.access_token')
+  AuthService/Login | jq -r '.access_token')
 
 grpcurl -plaintext \
   -rpc-header "authorization: Bearer ${USER_TOKEN}" \
   -rpc-header "accept-language: tr" \
   -d '{"page":0,"size":5}' \
   localhost:9090 \
-  TodoApi/ListTodos
+  TodoService/ListTodos
 ```
 
 ## Validation and Error Details
@@ -325,7 +325,7 @@ grpcurl -plaintext \
   -rpc-header "accept-language: tr" \
   -d '{"title":"ab"}' \
   localhost:9090 \
-  TodoApi/CreateTodo
+  TodoService/CreateTodo
 ```
 
 Expected gRPC status:

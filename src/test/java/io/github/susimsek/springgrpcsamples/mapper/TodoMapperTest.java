@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.github.susimsek.springgrpcsamples.domain.TodoEntity;
 import io.github.susimsek.springgrpcsamples.proto.CreateTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.PatchTodoRequest;
-import io.github.susimsek.springgrpcsamples.proto.TodoResponse;
+import io.github.susimsek.springgrpcsamples.proto.Todo;
 import io.github.susimsek.springgrpcsamples.proto.UpdateTodoRequest;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class TodoMapperTest {
         todo.setCreatedAt(Instant.EPOCH);
         todo.setUpdatedAt(Instant.EPOCH);
 
-        mapper.update(
+        mapper.updateEntity(
                 UpdateTodoRequest.newBuilder()
                         .setId(1L)
                         .setTitle("Mapped title")
@@ -52,7 +52,7 @@ class TodoMapperTest {
     void partiallyUpdatesOnlyPresentPatchFields() {
         TodoEntity todo = new TodoEntity(1L, "Old title", false);
 
-        mapper.partialUpdate(
+        mapper.patchEntity(
                 PatchTodoRequest.newBuilder().setId(1L).setCompleted(true).build(), todo);
 
         assertThat(todo.getTitle()).isEqualTo("Old title");
@@ -65,7 +65,7 @@ class TodoMapperTest {
         todo.setCreatedAt(Instant.EPOCH);
         todo.setUpdatedAt(Instant.EPOCH.plusSeconds(1));
 
-        TodoResponse response = mapper.toResponse(todo);
+        Todo response = mapper.toProto(todo);
 
         assertThat(response.getId()).isEqualTo(1L);
         assertThat(response.getTitle()).isEqualTo("Mapped title");
@@ -76,7 +76,7 @@ class TodoMapperTest {
 
     @Test
     void mapsTodoToResponseWithoutTimestamps() {
-        TodoResponse response = mapper.toResponse(new TodoEntity(1L, "Mapped title", false));
+        Todo response = mapper.toProto(new TodoEntity(1L, "Mapped title", false));
 
         assertThat(response.hasCreatedAt()).isFalse();
         assertThat(response.hasUpdatedAt()).isFalse();

@@ -3,7 +3,7 @@ package io.github.susimsek.springgrpcsamples.mapper;
 import io.github.susimsek.springgrpcsamples.domain.TodoEntity;
 import io.github.susimsek.springgrpcsamples.proto.CreateTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.PatchTodoRequest;
-import io.github.susimsek.springgrpcsamples.proto.TodoResponse;
+import io.github.susimsek.springgrpcsamples.proto.Todo;
 import io.github.susimsek.springgrpcsamples.proto.UpdateTodoRequest;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -28,17 +28,17 @@ public interface TodoMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    void update(UpdateTodoRequest request, @MappingTarget TodoEntity entity);
+    void updateEntity(UpdateTodoRequest request, @MappingTarget TodoEntity entity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    void partialUpdate(PatchTodoRequest request, @MappingTarget TodoEntity entity);
+    void patchEntity(PatchTodoRequest request, @MappingTarget TodoEntity entity);
 
     @ProtobufMapping
     @Mapping(target = "mergeCreatedAt", ignore = true)
     @Mapping(target = "mergeUpdatedAt", ignore = true)
     @Mapping(target = "titleBytes", ignore = true)
-    TodoResponse toResponse(TodoEntity todo);
+    Todo toProto(TodoEntity todo);
 }

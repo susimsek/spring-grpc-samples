@@ -1,9 +1,9 @@
 package io.github.susimsek.springgrpcsamples.service;
 
 import io.github.susimsek.springgrpcsamples.exception.InvalidCredentialsException;
-import io.github.susimsek.springgrpcsamples.proto.AuthApiGrpc;
+import io.github.susimsek.springgrpcsamples.proto.AuthServiceGrpc;
 import io.github.susimsek.springgrpcsamples.proto.LoginRequest;
-import io.github.susimsek.springgrpcsamples.proto.LoginResponse;
+import io.github.susimsek.springgrpcsamples.proto.Token;
 import io.github.susimsek.springgrpcsamples.security.JwtService;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthGrpcService extends AuthApiGrpc.AuthApiImplBase {
+public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
 
     private static final String BEARER_TOKEN_TYPE = "Bearer";
 
@@ -23,10 +23,10 @@ public class AuthGrpcService extends AuthApiGrpc.AuthApiImplBase {
     private final JwtService jwtService;
 
     @Override
-    public void login(LoginRequest request, StreamObserver<LoginResponse> responseObserver) {
+    public void login(LoginRequest request, StreamObserver<Token> responseObserver) {
         Authentication authentication = authenticate(request);
         responseObserver.onNext(
-                LoginResponse.newBuilder()
+                Token.newBuilder()
                         .setAccessToken(jwtService.generateToken(authentication))
                         .setTokenType(BEARER_TOKEN_TYPE)
                         .setExpiresIn(jwtService.getExpiresInSeconds())

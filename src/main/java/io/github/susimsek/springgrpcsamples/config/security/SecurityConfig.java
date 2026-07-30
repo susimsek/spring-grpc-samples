@@ -39,9 +39,9 @@ public class SecurityConfig {
     AuthenticationProcessInterceptor grpcSecurityFilterChain(GrpcSecurity grpc) throws Exception {
         return grpc.authorizeRequests(
                         requests ->
-                                requests.methods("AuthApi/Login", "grpc.*/*")
+                                requests.methods("AuthService/Login", "grpc.*/*")
                                         .permitAll()
-                                        .methods("TodoApi/*")
+                                        .methods("TodoService/*")
                                         .hasAuthority(AuthoritiesConstants.ADMIN)
                                         .allRequests()
                                         .authenticated())

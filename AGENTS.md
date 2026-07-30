@@ -64,7 +64,7 @@ This repo is a Java 25 + Spring Boot 4.1 sample application that exposes a serve
   - `repository`: Spring Data JPA repositories
   - `security`: authority constants, JWT service, user-details service, security utilities
   - `service`: gRPC service implementations
-- Protobuf contract: `src/main/proto/todo.proto`
+- Protobuf contracts: `src/main/proto`
 - Application config: `src/main/resources/config/application.yml`
 - Liquibase:
   - Master: `src/main/resources/db/changelog/db.changelog-master.xml`
@@ -132,7 +132,7 @@ grpcurl -plaintext localhost:9090 list
 TOKEN=$(grpcurl -plaintext \
   -d '{"username":"admin","password":"admin"}' \
   localhost:9090 \
-  AuthApi/Login | jq -r '.access_token')
+  AuthService/Login | jq -r '.access_token')
 ```
 
 - Call a secured Todo API:
@@ -143,7 +143,7 @@ grpcurl -plaintext \
   -rpc-header "accept-language: tr" \
   -d '{"page":0,"size":5}' \
   localhost:9090 \
-  TodoApi/ListTodos
+  TodoService/ListTodos
 ```
 
 ## Native Image & AOT Guidance
@@ -160,8 +160,8 @@ grpcurl -plaintext \
 
 ## Authentication
 
-- `AuthApi/Login` is public and returns a JWT access token.
-- `TodoApi/*` requires `ROLE_ADMIN`.
+- `AuthService/Login` is public and returns a JWT access token.
+- `TodoService/*` requires `ROLE_ADMIN`.
 - `grpc.*/*` infrastructure calls such as reflection and health are public.
 - Authentication uses normal JWT bearer tokens, not opaque tokens.
 - JWT authorities are stored in the `auth` claim. Use `SecurityUtils.AUTHORITIES_CLAIM`.
@@ -169,7 +169,7 @@ grpcurl -plaintext \
 - JWT is sent as `Authorization: Bearer <token>` gRPC metadata.
 - `prod` requires `APP_SECURITY_JWT_SECRET` (at least 256-bit, e.g. `openssl rand -hex 32`).
 - The checked-in JWT secret is for local sample use only; never commit real secrets.
-- Todo APIs should stay secured, but should not require admin globally for every possible service. Current rule: `TodoApi/*` requires `ROLE_ADMIN`; all other non-public calls require authentication.
+- Todo APIs should stay secured, but should not require admin globally for every possible service. Current rule: `TodoService/*` requires `ROLE_ADMIN`; all other non-public calls require authentication.
 - Keep constants in `AuthoritiesConstants`.
 - Keep user loading in `DomainUserDetailsService`.
 - Do not store plain text passwords in seed data; use BCrypt hashes.
@@ -291,7 +291,7 @@ grpcurl -plaintext \
 - Adding Spring Web just to get HTTP constants or MVC behavior.
 - Reintroducing REST/Web MVC exception models into gRPC exception handling.
 - Editing generated proto Java classes manually.
-- Forgetting `./mvnw generate-sources` after changing `todo.proto`.
+- Forgetting to run `./mvnw generate-sources` after modifying `.proto` files.
 - Forgetting to import `buf/validate/validate.proto` when using external tools such as Insomnia.
 - Applying `ROLE_ADMIN` checks globally to every service instead of securing intended RPC methods.
 - Adding handwritten classes to JaCoCo excludes instead of testing them.

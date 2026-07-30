@@ -5,48 +5,15 @@ import "google/protobuf/timestamp.proto";
 
 option java_multiple_files = true;
 option java_package = "io.github.susimsek.springgrpcsamples.proto";
-option java_outer_classname = "TodoApiProto";
+option java_outer_classname = "TodoProto";
 
-service TodoApi {
-  rpc CreateTodo(CreateTodoRequest) returns (TodoResponse) {}
-  rpc GetTodo(GetTodoRequest) returns (TodoResponse) {}
-  rpc ListTodos(ListTodosRequest) returns (ListTodosResponse) {}
-  rpc UpdateTodo(UpdateTodoRequest) returns (TodoResponse) {}
-  rpc PatchTodo(PatchTodoRequest) returns (TodoResponse) {}
+service TodoService {
+  rpc CreateTodo(CreateTodoRequest) returns (Todo) {}
+  rpc GetTodo(GetTodoRequest) returns (Todo) {}
+  rpc ListTodos(ListTodosRequest) returns (TodoList) {}
+  rpc UpdateTodo(UpdateTodoRequest) returns (Todo) {}
+  rpc PatchTodo(PatchTodoRequest) returns (Todo) {}
   rpc DeleteTodo(DeleteTodoRequest) returns (DeleteTodoResponse) {}
-}
-
-service AuthApi {
-  rpc Login(LoginRequest) returns (LoginResponse) {}
-}
-
-message LoginRequest {
-  string username = 1 [
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
-    (buf.validate.field).string = {
-      min_len: 3
-      max_len: 100
-    }
-  ];
-  string password = 2 [
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
-    (buf.validate.field).string = {
-      min_len: 3
-      max_len: 100
-    }
-  ];
-
-  option (buf.validate.message).cel = {
-    id: "grpc.validation.constraints.notBlank"
-    message: "This field cannot be blank."
-    expression: "this.username.matches('.*\\\\S.*') && this.password.matches('.*\\\\S.*')"
-  };
-}
-
-message LoginResponse {
-  string access_token = 1;
-  string token_type = 2;
-  int64 expires_in = 3;
 }
 
 message CreateTodoRequest {
@@ -66,15 +33,20 @@ message CreateTodoRequest {
 }
 
 message GetTodoRequest {
-  int64 id = 1 [(buf.validate.field).int64 = {
-    gt: 0
-  }];
+  int64 id = 1 [
+    (buf.validate.field).int64 = {
+      gt: 0
+    }
+  ];
 }
 
 message ListTodosRequest {
-  int32 page = 1 [(buf.validate.field).int32 = {
-    gte: 0
-  }];
+  int32 page = 1 [
+    (buf.validate.field).int32 = {
+      gte: 0
+    }
+  ];
+
   int32 size = 2 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).int32 = {
@@ -84,8 +56,8 @@ message ListTodosRequest {
   ];
 }
 
-message ListTodosResponse {
-  repeated TodoResponse items = 1;
+message TodoList {
+  repeated Todo items = 1;
   int32 page = 2;
   int32 size = 3;
   int64 total_elements = 4;
@@ -95,9 +67,12 @@ message ListTodosResponse {
 }
 
 message UpdateTodoRequest {
-  int64 id = 1 [(buf.validate.field).int64 = {
-    gt: 0
-  }];
+  int64 id = 1 [
+    (buf.validate.field).int64 = {
+      gt: 0
+    }
+  ];
+
   string title = 2 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).string = {
@@ -105,6 +80,7 @@ message UpdateTodoRequest {
       max_len: 255
     }
   ];
+
   bool completed = 3;
 
   option (buf.validate.message).cel = {
@@ -115,13 +91,19 @@ message UpdateTodoRequest {
 }
 
 message PatchTodoRequest {
-  int64 id = 1 [(buf.validate.field).int64 = {
-    gt: 0
-  }];
-  optional string title = 2 [(buf.validate.field).string = {
-    min_len: 3
-    max_len: 255
-  }];
+  int64 id = 1 [
+    (buf.validate.field).int64 = {
+      gt: 0
+    }
+  ];
+
+  optional string title = 2 [
+    (buf.validate.field).string = {
+      min_len: 3
+      max_len: 255
+    }
+  ];
+
   optional bool completed = 3;
 
   option (buf.validate.message).cel = {
@@ -129,6 +111,7 @@ message PatchTodoRequest {
     message: "This field cannot be empty."
     expression: "has(this.title) || has(this.completed)"
   };
+
   option (buf.validate.message).cel = {
     id: "grpc.validation.constraints.notBlank"
     message: "This field cannot be blank."
@@ -137,9 +120,11 @@ message PatchTodoRequest {
 }
 
 message DeleteTodoRequest {
-  int64 id = 1 [(buf.validate.field).int64 = {
-    gt: 0
-  }];
+  int64 id = 1 [
+    (buf.validate.field).int64 = {
+      gt: 0
+    }
+  ];
 }
 
 message DeleteTodoResponse {
@@ -147,7 +132,7 @@ message DeleteTodoResponse {
   bool deleted = 2;
 }
 
-message TodoResponse {
+message Todo {
   int64 id = 1;
   string title = 2;
   bool completed = 3;

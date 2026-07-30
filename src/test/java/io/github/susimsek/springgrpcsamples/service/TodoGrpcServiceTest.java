@@ -15,9 +15,9 @@ import io.github.susimsek.springgrpcsamples.proto.DeleteTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.DeleteTodoResponse;
 import io.github.susimsek.springgrpcsamples.proto.GetTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.ListTodosRequest;
-import io.github.susimsek.springgrpcsamples.proto.ListTodosResponse;
 import io.github.susimsek.springgrpcsamples.proto.PatchTodoRequest;
-import io.github.susimsek.springgrpcsamples.proto.TodoResponse;
+import io.github.susimsek.springgrpcsamples.proto.Todo;
+import io.github.susimsek.springgrpcsamples.proto.TodoList;
 import io.github.susimsek.springgrpcsamples.proto.UpdateTodoRequest;
 import io.github.susimsek.springgrpcsamples.repository.TodoRepository;
 import io.grpc.stub.StreamObserver;
@@ -83,7 +83,7 @@ class TodoGrpcServiceTest {
 
     @Test
     void createTodoStoresNewIncompleteTodo() {
-        RecordingObserver<TodoResponse> observer = new RecordingObserver<>();
+        RecordingObserver<Todo> observer = new RecordingObserver<>();
 
         service.createTodo(
                 CreateTodoRequest.newBuilder().setTitle("Create unit tests").build(), observer);
@@ -104,7 +104,7 @@ class TodoGrpcServiceTest {
 
     @Test
     void createTodoHandlesUnhandledExceptionsAsInternalStatus() {
-        RecordingObserver<TodoResponse> observer = new RecordingObserver<>();
+        RecordingObserver<Todo> observer = new RecordingObserver<>();
         when(todoRepository.save(any(TodoEntity.class)))
                 .thenThrow(new IllegalStateException("boom"));
 
@@ -124,7 +124,7 @@ class TodoGrpcServiceTest {
 
     @Test
     void getTodoValidatesIdAndMissingRows() {
-        RecordingObserver<TodoResponse> missingObserver = new RecordingObserver<>();
+        RecordingObserver<Todo> missingObserver = new RecordingObserver<>();
 
         assertThatThrownBy(
                         () ->
@@ -137,8 +137,8 @@ class TodoGrpcServiceTest {
 
     @Test
     void getTodoReturnsExistingTodo() {
-        TodoResponse created = createTodo("Fetch me");
-        RecordingObserver<TodoResponse> observer = new RecordingObserver<>();
+        Todo created = createTodo("Fetch me");
+        RecordingObserver<Todo> observer = new RecordingObserver<>();
 
         service.getTodo(GetTodoRequest.newBuilder().setId(created.getId()).build(), observer);
 
@@ -148,10 +148,10 @@ class TodoGrpcServiceTest {
 
     @Test
     void listTodosReturnsRequestedPage() {
-        TodoResponse first = createTodo("First");
+        Todo first = createTodo("First");
         createTodo("Second");
-        TodoResponse third = createTodo("Third");
-        RecordingObserver<ListTodosResponse> observer = new RecordingObserver<>();
+        Todo third = createTodo("Third");
+        RecordingObserver<TodoList> observer = new RecordingObserver<>();
 
         service.listTodos(ListTodosRequest.newBuilder().setPage(1).setSize(2).build(), observer);
 
@@ -193,9 +193,9 @@ class TodoGrpcServiceTest {
 
     @Test
     void updateTodoReplacesExistingTodo() {
-        TodoResponse created = createTodo("Old title");
+        Todo created = createTodo("Old title");
 
-        RecordingObserver<TodoResponse> observer = updateTodo(created.getId(), "New title");
+        RecordingObserver<Todo> observer = updateTodo(created.getId(), "New title");
 
         assertThat(observer.values())
                 .singleElement()
@@ -225,15 +225,15 @@ class TodoGrpcServiceTest {
 
     @Test
     void patchTodoUpdatesOnlyProvidedFields() {
-        TodoResponse created = createTodo("Keep title");
+        Todo created = createTodo("Keep title");
 
-        RecordingObserver<TodoResponse> completedOnly =
+        RecordingObserver<Todo> completedOnly =
                 patchTodo(
                         PatchTodoRequest.newBuilder()
                                 .setId(created.getId())
                                 .setCompleted(true)
                                 .build());
-        RecordingObserver<TodoResponse> titleOnly =
+        RecordingObserver<Todo> titleOnly =
                 patchTodo(
                         PatchTodoRequest.newBuilder()
                                 .setId(created.getId())
@@ -265,10 +265,10 @@ class TodoGrpcServiceTest {
 
     @Test
     void deleteTodoRemovesExistingTodo() {
-        TodoResponse created = createTodo("Delete me");
+        Todo created = createTodo("Delete me");
 
         RecordingObserver<DeleteTodoResponse> observer = deleteTodo(created.getId());
-        RecordingObserver<TodoResponse> getObserver = new RecordingObserver<>();
+        RecordingObserver<Todo> getObserver = new RecordingObserver<>();
 
         assertThat(observer.values())
                 .singleElement()
@@ -287,28 +287,28 @@ class TodoGrpcServiceTest {
                 .hasMessage("todo not found with id: " + created.getId());
     }
 
-    private TodoResponse createTodo(String title) {
-        RecordingObserver<TodoResponse> observer = new RecordingObserver<>();
+    private Todo createTodo(String title) {
+        RecordingObserver<Todo> observer = new RecordingObserver<>();
         service.createTodo(CreateTodoRequest.newBuilder().setTitle(title).build(), observer);
         return observer.values().getFirst();
     }
 
-    private RecordingObserver<TodoResponse> updateTodo(long id, String title) {
-        RecordingObserver<TodoResponse> observer = new RecordingObserver<>();
+    private RecordingObserver<Todo> updateTodo(long id, String title) {
+        RecordingObserver<Todo> observer = new RecordingObserver<>();
         service.updateTodo(
                 UpdateTodoRequest.newBuilder().setId(id).setTitle(title).setCompleted(true).build(),
                 observer);
         return observer;
     }
 
-    private RecordingObserver<TodoResponse> patchTodo(PatchTodoRequest request) {
-        RecordingObserver<TodoResponse> observer = new RecordingObserver<>();
+    private RecordingObserver<Todo> patchTodo(PatchTodoRequest request) {
+        RecordingObserver<Todo> observer = new RecordingObserver<>();
         service.patchTodo(request, observer);
         return observer;
     }
 
-    private RecordingObserver<ListTodosResponse> listTodos(int page, int size) {
-        RecordingObserver<ListTodosResponse> observer = new RecordingObserver<>();
+    private RecordingObserver<TodoList> listTodos(int page, int size) {
+        RecordingObserver<TodoList> observer = new RecordingObserver<>();
         service.listTodos(
                 ListTodosRequest.newBuilder().setPage(page).setSize(size).build(), observer);
         return observer;

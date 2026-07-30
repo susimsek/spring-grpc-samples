@@ -79,8 +79,8 @@ class SecurityConfigTest {
         OAuth2ResourceServerConfigurer resourceServer = mock(OAuth2ResourceServerConfigurer.class);
         OAuth2ResourceServerConfigurer.JwtConfigurer jwt =
                 mock(OAuth2ResourceServerConfigurer.JwtConfigurer.class);
-        when(requests.methods("AuthApi/Login", "grpc.*/*")).thenReturn(authorizedCall);
-        when(requests.methods("TodoApi/*")).thenReturn(authorizedCall);
+        when(requests.methods("AuthService/Login", "grpc.*/*")).thenReturn(authorizedCall);
+        when(requests.methods("TodoService/*")).thenReturn(authorizedCall);
         when(authorizedCall.permitAll()).thenReturn(requests);
         when(requests.allRequests()).thenReturn(authorizedCall);
         when(authorizedCall.hasAuthority(AuthoritiesConstants.ADMIN)).thenReturn(requests);
@@ -114,8 +114,8 @@ class SecurityConfigTest {
         AuthenticationProcessInterceptor result = config.grpcSecurityFilterChain(grpc);
 
         assertThat(result).isSameAs(interceptor);
-        verify(requests).methods("AuthApi/Login", "grpc.*/*");
-        verify(requests).methods("TodoApi/*");
+        verify(requests).methods("AuthService/Login", "grpc.*/*");
+        verify(requests).methods("TodoService/*");
         verify(authorizedCall).hasAuthority(AuthoritiesConstants.ADMIN);
         verify(requests).allRequests();
         verify(authorizedCall).authenticated();

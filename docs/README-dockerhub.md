@@ -95,8 +95,8 @@ grpcurl -plaintext localhost:9090 list
 Expected services include:
 
 ```text
-AuthApi
-TodoApi
+AuthService
+TodoService
 grpc.health.v1.Health
 grpc.reflection.v1.ServerReflection
 ```
@@ -116,7 +116,7 @@ Get an admin token:
 TOKEN=$(grpcurl -plaintext \
   -d '{"username":"admin","password":"admin"}' \
   localhost:9090 \
-  AuthApi/Login | jq -r '.access_token')
+  AuthService/Login | jq -r '.access_token')
 ```
 
 List todos:
@@ -126,7 +126,7 @@ grpcurl -plaintext \
   -rpc-header "authorization: Bearer ${TOKEN}" \
   -d '{"page":0,"size":5}' \
   localhost:9090 \
-  TodoApi/ListTodos
+  TodoService/ListTodos
 ```
 
 Create a todo:
@@ -136,7 +136,7 @@ grpcurl -plaintext \
   -rpc-header "authorization: Bearer ${TOKEN}" \
   -d '{"title":"Prepare gRPC release"}' \
   localhost:9090 \
-  TodoApi/CreateTodo
+  TodoService/CreateTodo
 ```
 
 ## Localized errors
@@ -151,7 +151,7 @@ grpcurl -plaintext \
   -rpc-header "accept-language: tr" \
   -d '{"title":"ab"}' \
   localhost:9090 \
-  TodoApi/CreateTodo
+  TodoService/CreateTodo
 ```
 
 English validation example:
@@ -162,7 +162,7 @@ grpcurl -plaintext \
   -rpc-header "accept-language: en" \
   -d '{"title":"ab"}' \
   localhost:9090 \
-  TodoApi/CreateTodo
+  TodoService/CreateTodo
 ```
 
 ## Environment variables
@@ -190,16 +190,16 @@ openssl rand -hex 32
 
 Auth:
 
-- `AuthApi/Login`
+- `AuthService/Login`
 
 Todos:
 
-- `TodoApi/CreateTodo`
-- `TodoApi/GetTodo`
-- `TodoApi/ListTodos`
-- `TodoApi/UpdateTodo`
-- `TodoApi/PatchTodo`
-- `TodoApi/DeleteTodo`
+- `TodoService/CreateTodo`
+- `TodoService/GetTodo`
+- `TodoService/ListTodos`
+- `TodoService/UpdateTodo`
+- `TodoService/PatchTodo`
+- `TodoService/DeleteTodo`
 
 Infrastructure:
 
@@ -230,6 +230,6 @@ readinessProbe:
 - This is a gRPC server sample; it does not serve a REST API or web UI.
 - The default database is in-memory H2, so data is reset when the container stops.
 - Liquibase migrations and CSV seed data run on startup by default.
-- `AuthApi/Login`, gRPC health, and gRPC reflection are public.
+- `AuthService/Login`, gRPC health, and gRPC reflection are public.
 - Todo APIs require a valid JWT and are restricted to `ROLE_ADMIN`.
 - Use `accept-language: tr` or `accept-language: en` metadata to localize error responses.

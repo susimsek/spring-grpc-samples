@@ -60,7 +60,9 @@ public class GrpcValidationServerInterceptor implements ServerInterceptor {
                 ValidationResult result = validator.validate(message);
                 if (!result.isSuccess()) {
                     throw new GrpcValidationException(
-                            result.getViolations().stream().map(GrpcViolation::new).toList());
+                            result.getViolations().stream()
+                                    .map(v -> GrpcViolation.from(v))
+                                    .toList());
                 }
             } catch (ValidationException ex) {
                 throw new IllegalStateException("Failed to validate gRPC request", ex);

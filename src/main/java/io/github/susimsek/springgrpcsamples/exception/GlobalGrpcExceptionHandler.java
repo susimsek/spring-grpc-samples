@@ -115,7 +115,7 @@ public class GlobalGrpcExceptionHandler {
         return resolveMessage(
                 validationViolation.messageCode(),
                 defaultMessage,
-                validationViolation.messageArguments().toArray(Object[]::new));
+                validationViolation.messageArguments());
     }
 
     private static String resolveField(Violation violation) {

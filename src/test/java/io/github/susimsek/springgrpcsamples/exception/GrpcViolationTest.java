@@ -1,7 +1,6 @@
 package io.github.susimsek.springgrpcsamples.exception;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -12,8 +11,6 @@ import build.buf.protovalidate.exceptions.ValidationException;
 import build.buf.validate.Violation;
 import com.google.protobuf.Message;
 import io.github.susimsek.springgrpcsamples.proto.CreateTodoRequest;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class GrpcViolationTest {
@@ -22,7 +19,9 @@ class GrpcViolationTest {
 
     @Test
     void resolvesUnknownMessageCodeWhenRuleIdMissing() {
-        GrpcViolation violation = new GrpcViolation(Violation.newBuilder().build());
+        GrpcViolation violation =
+                new GrpcViolation(
+                        Violation.newBuilder().build(), "grpc.validation.unknown", new Object[0]);
 
         assertThat(violation.messageCode()).isEqualTo("grpc.validation.unknown");
         assertThat(violation.messageArguments()).isEmpty();
@@ -32,9 +31,14 @@ class GrpcViolationTest {
     void resolvesCustomAndStandardMessageCodesFromProtoViolation() {
         GrpcViolation custom =
                 new GrpcViolation(
-                        Violation.newBuilder().setRuleId("grpc.validation.custom").build());
+                        Violation.newBuilder().setRuleId("grpc.validation.custom").build(),
+                        "grpc.validation.custom",
+                        new Object[0]);
         GrpcViolation standard =
-                new GrpcViolation(Violation.newBuilder().setRuleId("string.min_len").build());
+                new GrpcViolation(
+                        Violation.newBuilder().setRuleId("string.min_len").build(),
+                        "grpc.validation.constraints.string.min_len",
+                        new Object[0]);
 
         assertThat(custom.messageCode()).isEqualTo("grpc.validation.custom");
         assertThat(standard.messageCode()).isEqualTo("grpc.validation.constraints.string.min_len");
@@ -47,11 +51,11 @@ class GrpcViolationTest {
                         .getViolations()
                         .getFirst();
 
-        GrpcViolation violation = new GrpcViolation(protoViolation);
+        GrpcViolation violation = GrpcViolation.from(protoViolation);
 
         assertThat(violation.messageCode()).isEqualTo("grpc.validation.constraints.string.min_len");
         assertThat(violation.messageArguments()).hasSize(1);
-        assertThat(violation.messageArguments().getFirst()).isNotNull();
+        assertThat(violation.messageArguments()[0]).isNotNull();
     }
 
     @Test
@@ -61,7 +65,7 @@ class GrpcViolationTest {
         when(protoViolation.toProto())
                 .thenReturn(Violation.newBuilder().setRuleId("grpc.validation.custom").build());
 
-        GrpcViolation violation = new GrpcViolation(protoViolation);
+        GrpcViolation violation = GrpcViolation.from(protoViolation);
 
         assertThat(violation.messageCode()).isEqualTo("grpc.validation.custom");
         assertThat(violation.messageArguments()).isEmpty();
@@ -70,18 +74,18 @@ class GrpcViolationTest {
     @Test
     void equalsAndHashCodeUseListContent() {
         Violation proto = Violation.newBuilder().setRuleId("string.min_len").build();
-        GrpcViolation first = new GrpcViolation(proto, "code", List.of("x", 1));
+        GrpcViolation first = new GrpcViolation(proto, "code", new Object[] {"x", 1});
         GrpcViolation second =
-                new GrpcViolation(proto.toBuilder().build(), "code", List.of("x", 1));
+                new GrpcViolation(proto.toBuilder().build(), "code", new Object[] {"x", 1});
         GrpcViolation differentViolation =
                 new GrpcViolation(
                         Violation.newBuilder().setRuleId("string.max_len").build(),
                         "code",
-                        List.of("x", 1));
+                        new Object[] {"x", 1});
         GrpcViolation differentMessageCode =
-                new GrpcViolation(proto.toBuilder().build(), "other", List.of("x", 1));
+                new GrpcViolation(proto.toBuilder().build(), "other", new Object[] {"x", 1});
         GrpcViolation differentArguments =
-                new GrpcViolation(proto.toBuilder().build(), "code", List.of("x", 2));
+                new GrpcViolation(proto.toBuilder().build(), "code", new Object[] {"x", 2});
 
         assertThat(first).isEqualTo(first);
         assertThat(first).isEqualTo(second);
@@ -95,7 +99,7 @@ class GrpcViolationTest {
     @Test
     void toStringPrintsListContent() {
         GrpcViolation violation =
-                new GrpcViolation(Violation.newBuilder().build(), "code", List.of("x", 1));
+                new GrpcViolation(Violation.newBuilder().build(), "code", new Object[] {"x", 1});
 
         assertThat(violation.toString())
                 .contains("GrpcViolation[")
@@ -104,16 +108,11 @@ class GrpcViolationTest {
     }
 
     @Test
-    void protectsMessageArgumentsWithDefensiveCopies() {
-        List<Object> arguments = new ArrayList<>(List.of("x"));
+    void messageArgumentsReturnsStoredArray() {
         GrpcViolation violation =
-                new GrpcViolation(Violation.newBuilder().build(), "code", arguments);
-
-        arguments.set(0, "changed");
+                new GrpcViolation(Violation.newBuilder().build(), "code", new Object[] {"x"});
 
         assertThat(violation.messageArguments()).containsExactly("x");
-        assertThatThrownBy(() -> violation.messageArguments().set(0, "also-changed"))
-                .isInstanceOf(UnsupportedOperationException.class);
     }
 
     private ValidationResult validate(Message message) {

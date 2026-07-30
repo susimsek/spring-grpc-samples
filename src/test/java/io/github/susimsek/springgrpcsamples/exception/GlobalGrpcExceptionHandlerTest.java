@@ -153,8 +153,13 @@ class GlobalGrpcExceptionHandlerTest {
                                                 Violation.newBuilder()
                                                         .setRuleId("custom.unknown")
                                                         .setMessage("fallback message")
-                                                        .build()),
-                                        new GrpcViolation(Violation.newBuilder().build()))));
+                                                        .build(),
+                                                "custom.unknown",
+                                                new Object[0]),
+                                        new GrpcViolation(
+                                                Violation.newBuilder().build(),
+                                                "grpc.validation.unknown",
+                                                new Object[0]))));
 
         BadRequest badRequest = badRequest(exception);
         assertThat(badRequest.getFieldViolationsList())
@@ -175,7 +180,9 @@ class GlobalGrpcExceptionHandlerTest {
                                                 Violation.newBuilder()
                                                         .setField(FieldPath.newBuilder().build())
                                                         .setMessage("empty field message")
-                                                        .build()),
+                                                        .build(),
+                                                "grpc.validation.unknown",
+                                                new Object[0]),
                                         new GrpcViolation(
                                                 Violation.newBuilder()
                                                         .setField(
@@ -198,7 +205,9 @@ class GlobalGrpcExceptionHandlerTest {
                                                                                         .build())
                                                                         .build())
                                                         .setMessage("nested message")
-                                                        .build()),
+                                                        .build(),
+                                                "grpc.validation.unknown",
+                                                new Object[0]),
                                         new GrpcViolation(
                                                 Violation.newBuilder()
                                                         .setField(
@@ -211,7 +220,9 @@ class GlobalGrpcExceptionHandlerTest {
                                                                                         .build())
                                                                         .build())
                                                         .setMessage("number message")
-                                                        .build()),
+                                                        .build(),
+                                                "grpc.validation.unknown",
+                                                new Object[0]),
                                         new GrpcViolation(
                                                 Violation.newBuilder()
                                                         .setField(
@@ -223,7 +234,9 @@ class GlobalGrpcExceptionHandlerTest {
                                                                         .build())
                                                         .setRuleId("string.min_len")
                                                         .setMessage("range message")
-                                                        .build()))));
+                                                        .build(),
+                                                "grpc.validation.constraints.string.min_len",
+                                                new Object[0]))));
 
         BadRequest badRequest = badRequest(exception);
         assertThat(badRequest.getFieldViolationsList())
@@ -242,7 +255,9 @@ class GlobalGrpcExceptionHandlerTest {
                                                         .setRuleId(
                                                                 "grpc.validation.constraints.notBlank")
                                                         .setMessage("blank message")
-                                                        .build()))));
+                                                        .build(),
+                                                "grpc.validation.constraints.notBlank",
+                                                new Object[0]))));
 
         BadRequest badRequest = badRequest(exception);
         assertThat(badRequest.getFieldViolationsList())
@@ -294,7 +309,7 @@ class GlobalGrpcExceptionHandlerTest {
                 Arrays.stream(messages)
                         .map(this::validate)
                         .flatMap(result -> result.getViolations().stream())
-                        .map(GrpcViolation::new)
+                        .map(GrpcViolation::from)
                         .toList();
         return new GrpcValidationException(violations);
     }

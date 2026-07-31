@@ -55,6 +55,7 @@ This repo is a Java 25 + Spring Boot 4.1 sample application that exposes a serve
 - Application root: `src/main/java/io/github/susimsek/springgrpcsamples`
   - `config`: Spring configuration
     - `aot`: GraalVM Native Image runtime hints (`NativeRuntimeHints`)
+    - `cache`: Spring Cache and Hibernate second-level cache configuration
     - `i18n`: gRPC locale resolution from metadata such as `accept-language`
     - `security`: JWT, password encoder, authentication manager, and gRPC security interceptor
     - `validation`: Protovalidate validator/interceptor configuration
@@ -73,6 +74,9 @@ This repo is a Java 25 + Spring Boot 4.1 sample application that exposes a serve
 - i18n messages:
   - Default English: `src/main/resources/i18n/messages.properties`
   - Turkish: `src/main/resources/i18n/messages_tr.properties`
+- Native image metadata:
+  - Runtime hints: `src/main/java/.../config/aot/NativeRuntimeHints.java`
+  - Resource-based GraalVM config: `src/main/resources/META-INF/native-image/**`
 - Docker compose: `src/main/docker/*.yml`
 - Helm chart: `helm/spring-grpc-samples`
 - Tests: `src/test/java`
@@ -150,13 +154,15 @@ grpcurl -plaintext \
 
 - Native builds use Spring Boot AOT and GraalVM Native Build Tools.
 - Build with `./mvnw -Pprod,native -DskipTests native:compile`.
-- Runtime hints live in `config/aot/NativeRuntimeHints`; update hints there when adding:
+- Runtime hints live in `config/aot/NativeRuntimeHints`; resource-based reflection/resource config lives under `src/main/resources/META-INF/native-image`.
+- Update `NativeRuntimeHints` when adding:
   - New Liquibase XML/CSV resources
   - New i18n message bundles
   - New protobuf descriptor files
-  - Types requiring reflection (e.g. custom validators, serializers)
+  - Application types requiring Spring `RuntimeHints`
+- Update `META-INF/native-image` when a library needs resource/reflect config that should stay close to the library namespace, such as Hibernate JCache.
 - If native runtime fails because resources are missing, add focused `RuntimeHints` instead of broad classpath inclusion.
-- Pay attention to Liquibase XML/CSV resources, i18n bundles, protobuf descriptors, H2, Hibernate, and Protovalidate when changing native-sensitive code.
+- Pay attention to Liquibase XML/CSV resources, i18n bundles, protobuf descriptors, H2, Hibernate, Hibernate JCache, and Protovalidate when changing native-sensitive code.
 
 ## Authentication
 
@@ -226,6 +232,7 @@ grpcurl -plaintext \
 - Auditing fields are `created_at` and `updated_at`, mapped as `Instant` in `AuditableEntity`.
 - For DB changes: add a new Liquibase XML changelog and include it from `db/changelog/db.changelog-master.xml`.
 - Do not modify existing changelogs that have already been applied.
+- Hibernate second-level cache uses JCache backed by Caffeine. Cache regions are configured in `config/cache/CacheConfig`.
 
 ### Docker Compose (Optional)
 

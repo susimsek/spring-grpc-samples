@@ -1,4 +1,4 @@
-# Spring gRPC Samples
+# Spring gRPC Samples 
 
 [![Build Status](https://circleci.com/gh/susimsek/spring-grpc-samples/tree/main.svg?style=shield)](https://circleci.com/gh/susimsek/spring-grpc-samples/tree/main)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=spring-grpc-samples&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=spring-grpc-samples)
@@ -17,7 +17,7 @@
 [![Helm](https://img.shields.io/badge/Helm-Charts-0F1689?logo=helm&logoColor=white)](https://helm.sh/)
 [![Codex](https://custom-icon-badges.demolab.com/badge/Codex-AI%20Agent-74aa9c?&logo=openai&logoColor=white)](https://openai.com/codex/)
 
-This repository is a server-side Todo sample application built with Spring Boot 4.1 + Spring gRPC + Spring Data JPA + Liquibase on Java 25. It exposes gRPC APIs for authentication and Todo CRUD, stores data in an H2 in-memory database, validates protobuf requests with Protovalidate, returns localized gRPC errors, and can be compiled as a GraalVM native executable.
+This repository is a server-side Todo sample application built with Spring Boot 4.1 + Spring gRPC + Spring Data JPA + Liquibase on Java 25. It exposes gRPC APIs for authentication and Todo CRUD, stores data in an H2 in-memory database, uses Hibernate second-level cache with Caffeine/JCache, validates protobuf requests with Protovalidate, returns localized gRPC errors, and can be compiled as a GraalVM native executable.
 
 There is no gRPC client module in this project.
 
@@ -54,6 +54,8 @@ There is no gRPC client module in this project.
 - XML-based Liquibase schema migrations
 - CSV seed data with fake Todo rows under Liquibase context `faker`
 - JPA auditing with `Instant` `created_at` and `updated_at`
+- Hibernate second-level cache via JCache + Caffeine
+- Spring Cache for `UserRepository#findByUsername`
 - MapStruct mapping between JPA entities and protobuf responses
 - Protovalidate request validation
 - Central gRPC exception handling with `@GrpcAdvice`
@@ -77,6 +79,7 @@ There is no gRPC client module in this project.
 
 - Application code: `src/main/java/io/github/susimsek/springgrpcsamples`
   - `config`: Spring configuration
+    - `cache`: Spring Cache and Hibernate second-level cache configuration
     - `i18n`: locale resolution from gRPC metadata
     - `security`: JWT, password encoder, authentication manager, gRPC security
     - `validation`: Protovalidate gRPC interceptor configuration
@@ -91,6 +94,7 @@ There is no gRPC client module in this project.
 - Liquibase: `src/main/resources/db/changelog`
 - Seed data: `src/main/resources/db/data`
 - i18n messages: `src/main/resources/i18n`
+- Native image metadata: `src/main/resources/META-INF/native-image`
 - Docker compose files: `src/main/docker`
 - Helm chart: `helm/spring-grpc-samples`
 - Tests: `src/test/java`
@@ -108,6 +112,8 @@ Important defaults:
 - Liquibase changelog: `classpath:db/changelog/db.changelog-master.xml`
 - Liquibase context: `faker` for Todo sample data
 - JWT issuer: `https://spring-grpc-samples.local`
+- Hibernate second-level cache: enabled
+- Cache provider: JCache backed by Caffeine
 
 The checked-in JWT secret is for local sample use only. Replace it for any real deployment.
 
@@ -117,7 +123,7 @@ Configuration lives under `src/main/resources/config`:
 
 - `application.yml` (shared)
 - `application-dev.yml` (H2, debug logs)
-- `application-prod.yml` (PostgreSQL, cache headers)
+- `application-prod.yml` (PostgreSQL, production cache sizing)
 
 Maven profiles:
 
@@ -127,6 +133,11 @@ Maven profiles:
 - `docker-compose` — Spring Boot Docker Compose integration
 
 `spring.profiles.active` in `application.yml` is filled via Maven resource filtering.
+
+Cache defaults by profile:
+
+- `dev`: `ttl=PT1H`, `initial-capacity=50`, `maximum-size=100`
+- `prod`: `ttl=PT1H`, `initial-capacity=500`, `maximum-size=1000`
 
 ## Run Locally
 
@@ -690,4 +701,3 @@ Environment variables:
 - SonarCloud: `SONAR_TOKEN` (optional)
 - Snyk: `SNYK_TOKEN` (optional)
 - Docker Hub push: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN` (only on `main`)
-

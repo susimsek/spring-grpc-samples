@@ -15,7 +15,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class SecurityJwtConfig {
 
     private static final String HMAC_SHA_256 = "HmacSHA256";

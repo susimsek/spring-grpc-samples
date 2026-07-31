@@ -1,6 +1,6 @@
 # Spring gRPC Samples (Spring Boot 4 + Native)
 
-Todo CRUD sample application built with Spring Boot 4, Spring gRPC, Spring Data JPA, Liquibase, H2, Spring Security JWT, and Protovalidate.
+Todo CRUD sample application built with Spring Boot 4, Spring gRPC, Spring Data JPA, Liquibase, H2, Spring Security JWT, Protovalidate, and Hibernate second-level cache backed by Caffeine/JCache.
 This image runs the app as a GraalVM native executable for fast startup and low memory usage.
 
 This image exposes server-side gRPC APIs for authentication and Todo management. The application listens on the standard gRPC port `9090`. When running containers on the same Docker network, connect to `<container-name>:9090` with plaintext gRPC unless you add TLS at the platform edge.
@@ -15,6 +15,7 @@ This image exposes server-side gRPC APIs for authentication and Todo management.
 - XML-based Liquibase schema migrations
 - CSV seed data for users, authorities, user authorities, and sample todos
 - JPA auditing with `Instant` `created_at` and `updated_at`
+- Hibernate second-level cache via JCache + Caffeine
 - MapStruct mapping between JPA entities and protobuf responses
 - Protovalidate request validation
 - Central gRPC exception handling with localized errors
@@ -230,6 +231,7 @@ readinessProbe:
 - This is a gRPC server sample; it does not serve a REST API or web UI.
 - The default database is in-memory H2, so data is reset when the container stops.
 - Liquibase migrations and CSV seed data run on startup by default.
+- Hibernate second-level cache is enabled in the application configuration.
 - `AuthService/Login`, gRPC health, and gRPC reflection are public.
 - Todo APIs require a valid JWT and are restricted to `ROLE_ADMIN`.
 - Use `accept-language: tr` or `accept-language: en` metadata to localize error responses.

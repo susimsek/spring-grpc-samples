@@ -17,6 +17,11 @@ spring:
     contexts: dev, faker
 
 app:
+  cache:
+    caffeine:
+      ttl: PT1H
+      initial-capacity: 50
+      maximum-size: 100
   security:
     jwt:
       secret: CDyi/yxfK/EMHtj20eOFoLc0t08WVHotnfcpgpnjdt4=
@@ -28,5 +33,4 @@ logging:
     root: INFO
     org.hibernate.SQL: DEBUG
     io.github.susimsek.springgrpcsamples: DEBUG
-
 

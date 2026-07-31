@@ -20,6 +20,11 @@ spring:
     contexts: prod
 
 app:
+  cache:
+    caffeine:
+      ttl: PT1H
+      initial-capacity: 500
+      maximum-size: 1000
   security:
     jwt:
       secret: ${SECURITY_JWT_SECRET}
@@ -31,4 +36,3 @@ logging:
     root: INFO
     org.hibernate.SQL: INFO
     io.github.susimsek.springgrpcsamples: INFO
-

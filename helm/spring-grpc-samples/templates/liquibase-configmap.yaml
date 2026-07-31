@@ -7,12 +7,12 @@ metadata:
     {{ include "spring-grpc-samples.labels" . | nindent 4 }}
 data:
   db.changelog-master.xml: |-
-{{ .Files.Get "liquibase/changelog/db.changelog-master.xml" | indent 4 }}
-{{- range $path, $_ := .Files.Glob "liquibase/changelog/changes/*.xml" }}
+{{ .Files.Get "db/changelog/db.changelog-master.xml" | indent 4 }}
+{{- range $path, $_ := .Files.Glob "db/changelog/changes/*.xml" }}
   {{ base $path }}: |-
 {{ $.Files.Get $path | indent 4 }}
 {{- end }}
-{{- range $path, $_ := .Files.Glob "liquibase/data/*.csv" }}
+{{- range $path, $_ := .Files.Glob "db/data/*.csv" }}
   {{ base $path }}: |-
 {{ $.Files.Get $path | indent 4 }}
 {{- end }}

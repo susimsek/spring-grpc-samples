@@ -41,7 +41,7 @@ There is no gRPC client module in this project.
 
 ## Requirements
 
-- Java: `25+`
+- Java: `25`
 - Maven Wrapper: `./mvnw`
 - Optional:
   - `grpcurl`

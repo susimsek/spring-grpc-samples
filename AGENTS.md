@@ -42,7 +42,7 @@ This repo is a Java 25 + Spring Boot 4.1 sample application that exposes a serve
 
 ## Prerequisites
 
-- Java: `25+`
+- Java: `25`
 - Maven: use the wrapper (`./mvnw`)
 - Optional gRPC testing tools:
   - `grpcurl`

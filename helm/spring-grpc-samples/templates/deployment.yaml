@@ -99,7 +99,7 @@ spec:
               value: {{ .Values.initContainers.liquibase.changeLogFile | quote }}
           volumeMounts:
             - name: liquibase-volume
-              mountPath: /liquibase
+              mountPath: /liquibase/db
               readOnly: true
         {{- end }}
       containers:
@@ -179,14 +179,14 @@ spec:
             name: {{ include "spring-grpc-samples.fullname" . }}-liquibase
             items:
               - key: db.changelog-master.xml
-                path: db/changelog/db.changelog-master.xml
+                path: changelog/db.changelog-master.xml
               {{- range $path, $_ := .Files.Glob "liquibase/changelog/changes/*.xml" }}
               - key: {{ base $path }}
-                path: db/changelog/changes/{{ base $path }}
+                path: changelog/changes/{{ base $path }}
               {{- end }}
               {{- range $path, $_ := .Files.Glob "liquibase/data/*.csv" }}
               - key: {{ base $path }}
-                path: db/data/{{ base $path }}
+                path: data/{{ base $path }}
               {{- end }}
         {{- end }}
       {{- with .Values.nodeSelector }}

@@ -21,6 +21,29 @@ This repository is a server-side Todo sample application built with Spring Boot 
 
 There is no gRPC client module in this project.
 
+## Table of Contents
+
+1. [Features](#features)
+2. [Requirements](#requirements)
+3. [Project Layout](#project-layout)
+4. [Configuration](#configuration)
+5. [Configuration and Profiles](#configuration-and-profiles)
+6. [Run Locally](#run-locally)
+7. [API Quick Overview](#api-quick-overview)
+8. [gRPC Contracts](#grpc-contracts)
+9. [Try with grpcurl](#try-with-grpcurl)
+10. [Validation and Error Details](#validation-and-error-details)
+11. [Database](#database)
+12. [Internationalization](#internationalization)
+13. [Build](#build)
+14. [Code Quality](#code-quality)
+15. [GraalVM Native Image](#graalvm-native-image)
+16. [Docker Image](#docker-image)
+17. [Kubernetes Health Probe](#kubernetes-health-probe)
+18. [Docker Compose Support](#docker-compose-support)
+19. [Helm](#helm)
+20. [Continuous Integration](#continuous-integration)
+
 ## Features
 
 - Todo CRUD over gRPC
@@ -41,13 +64,14 @@ There is no gRPC client module in this project.
 
 ## Requirements
 
-- Java: `25`
-- Maven Wrapper: `./mvnw`
-- Optional:
-  - `grpcurl`
-  - `jq`
-  - Docker (for Jib, docker-compose, Helm)
-  - GraalVM Native Image (for native builds)
+- Java `25`
+- Maven Wrapper (`./mvnw`)
+- Kubernetes `1.24+`
+- Helm `3.8.0+`
+- Docker or Podman *(optional, for Jib, Docker Compose, and Helm deployments)*
+- GraalVM Native Image `25+` *(optional, for native builds)*
+- `grpcurl` *(optional, for gRPC testing)*
+- `jq` *(optional, for JSON processing)*
 
 ## Project Layout
 

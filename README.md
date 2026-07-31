@@ -6,14 +6,16 @@
 [![Docker Image Size](https://img.shields.io/docker/image-size/suayb/spring-grpc-samples/latest-native?label=Image%20Size)](https://hub.docker.com/r/suayb/spring-grpc-samples)
 [![Java](https://img.shields.io/badge/Java-25-ED8B00?logo=openjdk&logoColor=white)](https://openjdk.org/)
 [![Maven](https://img.shields.io/badge/Maven-3.9+-C71A36?logo=apache-maven&logoColor=white))](https://maven.apache.org/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-6DB33F?logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot)
-[![Spring Security](https://img.shields.io/badge/Spring%20Security-JWT-6DB33F?&logo=springsecurity&logoColor=white)](https://docs.spring.io/spring-security)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-6DB33F?logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot/)
+[![Spring Security](https://img.shields.io/badge/Spring%20Security-JWT-6DB33F?&logo=springsecurity&logoColor=white)](https://docs.spring.io/spring-security/)
 [![GraalVM](https://img.shields.io/badge/GraalVM-25%2B-FF6600?logo=graalvm)](https://www.graalvm.org/)
 [![gRPC](https://img.shields.io/badge/gRPC-High%20Performance-4285F4?logo=google&logoColor=white)](https://grpc.io/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Docker Compose](https://img.shields.io/badge/Docker_Compose-Orchestration-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-Orchestration-326CE5?logo=kubernetes&logoColor=white)](https://kubernetes.io/)
 [![Helm](https://img.shields.io/badge/Helm-Charts-0F1689?logo=helm&logoColor=white)](https://helm.sh/)
+[![Codex](https://custom-icon-badges.demolab.com/badge/Codex-181717?&logo=openai&logoColor=white)](https://openai.com/codex/)
 
 This repository is a server-side Todo sample application built with Spring Boot 4.1 + Spring gRPC + Spring Data JPA + Liquibase on Java 25. It exposes gRPC APIs for authentication and Todo CRUD, stores data in an H2 in-memory database, validates protobuf requests with Protovalidate, returns localized gRPC errors, and can be compiled as a GraalVM native executable.
 

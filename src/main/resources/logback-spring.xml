@@ -8,6 +8,9 @@
     <logger name="org.apache" level="WARN"/>
     <logger name="org.hibernate" level="WARN"/>
     <logger name="org.springframework" level="WARN"/>
+    <logger name="org.springframework.boot.docker" level="WARN"/>
+    <logger name="org.springframework.cache" level="WARN"/>
+    <logger name="org.springframework.grpc" level="WARN"/>
     <logger name="org.springframework.security" level="WARN"/>
     <logger name="org.springframework.security.oauth2" level="WARN"/>
     <logger name="liquibase" level="WARN"/>
@@ -19,4 +22,3 @@
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>
-

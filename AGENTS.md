@@ -303,7 +303,7 @@ grpcurl -plaintext \
 - Applying `ROLE_ADMIN` checks globally to every service instead of securing intended RPC methods.
 - Adding handwritten classes to JaCoCo excludes instead of testing them.
 - Using comma-separated Liquibase seed CSV files; this project uses `separator=";"`.
-- Adding new Liquibase resources or i18n bundles without updating `NativeRuntimeHints`.
+- Adding new Liquibase resources, i18n bundles, or library reflection config without updating `NativeRuntimeHints` or `META-INF/native-image`.
 - Forgetting `./mvnw spotless:apply` before committing; Spotless runs at compile phase and will fail the build.
 - In Mockito `verify/when/given`, avoid useless `eq(...)` matchers; pass values directly and use `ArgumentCaptor` when you need to assert arguments.
 - Avoid redundant temporary variables like `var result = expr; return result;` — return the expression directly.

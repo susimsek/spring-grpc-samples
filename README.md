@@ -101,7 +101,7 @@ There is no gRPC client module in this project.
 
 ## Configuration
 
-Main configuration lives in `src/main/resources/application.yml`.
+Main configuration lives in `src/main/resources/config/application.yml`.
 
 Important defaults:
 

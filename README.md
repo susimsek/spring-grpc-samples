@@ -5,7 +5,7 @@
 [![Vulnerabilities](https://snyk.io/test/github/susimsek/spring-grpc-samples/badge.svg)](https://snyk.io/test/github/susimsek/spring-grpc-samples)
 [![Docker Image Size](https://img.shields.io/docker/image-size/suayb/spring-grpc-samples/latest-native?label=Image%20Size)](https://hub.docker.com/r/suayb/spring-grpc-samples)
 [![Java](https://img.shields.io/badge/Java-25-ED8B00?logo=openjdk&logoColor=white)](https://openjdk.org/)
-[![Maven](https://img.shields.io/badge/Maven-3.9+-C71A36?logo=apache-maven&logoColor=white))](https://maven.apache.org/)
+[![Maven](https://img.shields.io/badge/Maven-3.9+-C71A36?logo=apache-maven&logoColor=white)](https://maven.apache.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-6DB33F?logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot/)
 [![Spring Security](https://img.shields.io/badge/Spring%20Security-JWT-6DB33F?&logo=springsecurity&logoColor=white)](https://docs.spring.io/spring-security/)
 [![GraalVM](https://img.shields.io/badge/GraalVM-25%2B-FF6600?logo=graalvm)](https://www.graalvm.org/)

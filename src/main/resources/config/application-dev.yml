@@ -20,7 +20,7 @@ app:
   security:
     jwt:
       secret: CDyi/yxfK/EMHtj20eOFoLc0t08WVHotnfcpgpnjdt4=
-      issuer: https://auth.spring-grpc-samples.local
+      issuer: https://spring-grpc-samples.local
       expires-in: PT1H
 
 logging:

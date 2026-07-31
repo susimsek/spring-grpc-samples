@@ -176,7 +176,7 @@ grpcurl -plaintext \
 | `SPRING_DATASOURCE_PASSWORD` | (empty) | Database password |
 | `SPRING_LIQUIBASE_ENABLED` | `true` | Enable or disable Liquibase migrations |
 | `SPRING_LIQUIBASE_CONTEXTS` | `faker` | Liquibase contexts used for sample todo data |
-| `APP_SECURITY_JWT_ISSUER` | `https://auth.spring-grpc-samples.local` | JWT issuer |
+| `APP_SECURITY_JWT_ISSUER` | `https://spring-grpc-samples.local` | JWT issuer |
 | `SECURITY_JWT_SECRET` | local sample secret | JWT HMAC secret; replace for every real deployment |
 | `APP_SECURITY_JWT_EXPIRES_IN` | `1h` | Access token lifetime |
 

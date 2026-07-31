@@ -80,7 +80,7 @@ Important defaults:
 - JPA DDL mode: `validate`
 - Liquibase changelog: `classpath:db/changelog/db.changelog-master.xml`
 - Liquibase context: `faker` for Todo sample data
-- JWT issuer: `https://auth.spring-grpc-samples.local`
+- JWT issuer: `https://spring-grpc-samples.local`
 
 The checked-in JWT secret is for local sample use only. Replace it for any real deployment.
 

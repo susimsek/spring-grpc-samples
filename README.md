@@ -691,13 +691,9 @@ helm uninstall spring-grpc-samples -n apps
 
 
 ## Terraform
-Local Kubernetes infrastructure lives under:
+ - Directory: `terraform`
 
-```text
-terraform
-```
-
-It provisions:
+Terraform provisions:
 
 - a local `kind` cluster
 - namespace `apps`
@@ -707,28 +703,45 @@ It provisions:
 - PostgreSQL from the chart dependency
 - an active gRPC ingress for the application
 
-Docker runtime:
+Common commands:
+Initialize the Terraform working directory:
 
 ```bash
 terraform -chdir=terraform init
+```
+
+Validate the Terraform configuration:
+
+```bash
+terraform -chdir=terraform validate
+```
+
+Preview the planned infrastructure changes:
+
+```bash
+terraform -chdir=terraform plan
+```
+
+Create or update the local infrastructure:
+
+```bash
 terraform -chdir=terraform apply
 ```
 
-Podman runtime:
+Create or update the local infrastructure with Podman:
 
 ```bash
 export KIND_EXPERIMENTAL_PROVIDER=podman
-terraform -chdir=terraform init
 terraform -chdir=terraform apply
 ```
 
-For scripted or disposable local runs, you can skip the confirmation prompt:
+Create or update the local infrastructure without an approval prompt:
 
 ```bash
 terraform -chdir=terraform apply -auto-approve
 ```
 
-Then:
+Read the generated kubeconfig and ingress command:
 
 ```bash
 export KUBECONFIG="$(terraform -chdir=terraform output -raw kubeconfig_path)"
@@ -755,7 +768,7 @@ kubectl --kubeconfig="$(terraform -chdir=terraform output -raw kubeconfig_path)"
   port-forward svc/spring-grpc-samples 9090:9090
 ```
 
-Remove only the Helm release:
+Destroy only the application Helm release:
 
 ```bash
 terraform -chdir=terraform destroy -target=helm_release.spring_grpc_samples
@@ -767,7 +780,7 @@ Destroy the full local infrastructure:
 terraform -chdir=terraform destroy
 ```
 
-For scripted cleanup:
+Destroy the full local infrastructure without an approval prompt:
 
 ```bash
 terraform -chdir=terraform destroy -auto-approve

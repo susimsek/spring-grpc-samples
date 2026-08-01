@@ -44,6 +44,11 @@ This repo is a Java 25 + Spring Boot 4.1 sample application that exposes a serve
 
 - Java: `25`
 - Maven: use the wrapper (`./mvnw`)
+- Optional local infrastructure tooling:
+  - `terraform`
+  - `kind`
+  - `kubectl`
+  - Docker or Podman
 - Optional gRPC testing tools:
   - `grpcurl`
   - Insomnia or another gRPC-capable API client
@@ -79,6 +84,7 @@ This repo is a Java 25 + Spring Boot 4.1 sample application that exposes a serve
   - Resource-based GraalVM config: `src/main/resources/META-INF/native-image/**`
 - Docker compose: `src/main/docker/*.yml`
 - Helm chart: `helm/spring-grpc-samples`
+- Terraform local infrastructure: `terraform`
 - Tests: `src/test/java`
 
 

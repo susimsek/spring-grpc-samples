@@ -1,0 +1,9 @@
+cluster_name       = "local"
+kubernetes_version = "v1.33.1"
+namespace          = "apps"
+image_repository   = "docker.io/suayb/spring-grpc-samples"
+image_tag          = "latest-native"
+spring_profile     = "prod"
+
+# Replace for anything beyond local development.
+jwt_secret = "GOnGieF8gvSk01KtlZUwkpQB8U4tZWTrSt/BJm0+2Mk="

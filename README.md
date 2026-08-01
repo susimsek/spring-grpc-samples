@@ -15,6 +15,7 @@
 [![Docker Compose](https://img.shields.io/badge/Docker_Compose-Orchestration-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-Orchestration-326CE5?logo=kubernetes&logoColor=white)](https://kubernetes.io/)
 [![Helm](https://img.shields.io/badge/Helm-Charts-0F1689?logo=helm&logoColor=white)](https://helm.sh/)
+[![Terraform](https://img.shields.io/badge/Terraform-Infrastructure-623CE4?logo=terraform&logoColor=white)](https://www.terraform.io/)
 [![Codex](https://custom-icon-badges.demolab.com/badge/Codex-AI%20Agent-74aa9c?&logo=openai&logoColor=white)](https://openai.com/codex/)
 
 This repository is a server-side Todo sample application built with Spring Boot 4.1 + Spring gRPC + Spring Data JPA + Liquibase on Java 25. It exposes gRPC APIs for authentication and Todo CRUD, stores data in an H2 in-memory database, uses Hibernate second-level cache with Caffeine/JCache, validates protobuf requests with Protovalidate, returns localized gRPC errors, and can be compiled as a GraalVM native executable.
@@ -42,7 +43,8 @@ There is no gRPC client module in this project.
 17. [Kubernetes Health Probe](#kubernetes-health-probe)
 18. [Docker Compose Support](#docker-compose-support)
 19. [Helm](#helm)
-20. [Continuous Integration](#continuous-integration)
+20. [Terraform](#terraform)
+21. [Continuous Integration](#continuous-integration)
 
 ## Features
 
@@ -666,25 +668,95 @@ helm template spring-grpc-samples helm/spring-grpc-samples
 Create namespace (idempotent):
 
 ```bash
-kubectl create namespace spring-grpc-samples --dry-run=client -o yaml | kubectl apply -f -
+kubectl create namespace apps --dry-run=client -o yaml | kubectl apply -f -
 ```
 
 Install/upgrade release:
 
 ```bash
-helm upgrade --install spring-grpc-samples helm/spring-grpc-samples -n spring-grpc-samples
+helm upgrade --install spring-grpc-samples helm/spring-grpc-samples -n apps
 ```
 
 Install/upgrade with values override:
 
 ```bash
-helm upgrade --install spring-grpc-samples helm/spring-grpc-samples -n spring-grpc-samples -f helm/spring-grpc-samples/values.yaml
+helm upgrade --install spring-grpc-samples helm/spring-grpc-samples -n apps -f helm/spring-grpc-samples/values.yaml
 ```
 
 Uninstall release:
 
 ```bash
-helm uninstall spring-grpc-samples -n spring-grpc-samples
+helm uninstall spring-grpc-samples -n apps
+```
+
+
+## Terraform
+Local Kubernetes infrastructure lives under:
+
+```text
+terraform
+```
+
+It provisions:
+
+- a local `kind` cluster
+- namespace `apps`
+- the local Helm chart
+- PostgreSQL from the chart dependency
+- a `ClusterIP` gRPC service for the application
+
+Docker runtime:
+
+```bash
+terraform -chdir=terraform init
+terraform -chdir=terraform apply
+```
+
+Podman runtime:
+
+```bash
+export KIND_EXPERIMENTAL_PROVIDER=podman
+terraform -chdir=terraform init
+terraform -chdir=terraform apply
+```
+
+For scripted or disposable local runs, you can skip the confirmation prompt:
+
+```bash
+terraform -chdir=terraform apply -auto-approve
+```
+
+Then:
+
+```bash
+export KUBECONFIG="$(terraform -chdir=terraform output -raw kubeconfig_path)"
+kubectl -n apps port-forward svc/spring-grpc-samples 9090:9090
+```
+
+This forwards the in-cluster `ClusterIP` gRPC service to `localhost:9090` on your machine.
+
+In another terminal:
+
+```bash
+grpcurl -plaintext localhost:9090 list
+```
+
+Remove only the Helm release:
+
+```bash
+terraform -chdir=terraform destroy -target=helm_release.spring_grpc_samples
+```
+
+Destroy the full local infrastructure:
+
+```bash
+terraform -chdir=terraform destroy
+```
+
+For scripted cleanup:
+
+```bash
+terraform -chdir=terraform destroy -auto-approve
 ```
 
 ## Continuous Integration

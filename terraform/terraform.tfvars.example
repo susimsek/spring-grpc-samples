@@ -1,6 +1,11 @@
 cluster_name       = "local"
 kubernetes_version = "v1.33.1"
 namespace          = "apps"
+ingress_namespace  = "ingress-nginx"
+ingress_class_name = "nginx"
+ingress_host       = "spring-grpc.127.0.0.1.nip.io"
+ingress_http_host_port = 8080
+ingress_https_host_port = 8443
 image_repository   = "docker.io/suayb/spring-grpc-samples"
 image_tag          = "latest-native"
 spring_profile     = "prod"

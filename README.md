@@ -701,9 +701,11 @@ It provisions:
 
 - a local `kind` cluster
 - namespace `apps`
+- namespace `ingress-nginx`
+- an `ingress-nginx` controller reachable on host ports `8080` and `8443`
 - the local Helm chart
 - PostgreSQL from the chart dependency
-- a `ClusterIP` gRPC service for the application
+- an active gRPC ingress for the application
 
 Docker runtime:
 
@@ -730,15 +732,27 @@ Then:
 
 ```bash
 export KUBECONFIG="$(terraform -chdir=terraform output -raw kubeconfig_path)"
-kubectl -n apps port-forward svc/spring-grpc-samples 9090:9090
+terraform -chdir=terraform output -raw grpcurl_ingress_command
 ```
 
-This forwards the in-cluster `ClusterIP` gRPC service to `localhost:9090` on your machine.
+Default ingress hostname:
 
-In another terminal:
+```text
+spring-grpc.127.0.0.1.nip.io
+```
+
+Example:
 
 ```bash
-grpcurl -plaintext localhost:9090 list
+grpcurl -plaintext spring-grpc.127.0.0.1.nip.io:8080 list
+```
+
+Fallback access with `kubectl port-forward`:
+
+```bash
+kubectl --kubeconfig="$(terraform -chdir=terraform output -raw kubeconfig_path)" \
+  -n apps \
+  port-forward svc/spring-grpc-samples 9090:9090
 ```
 
 Remove only the Helm release:

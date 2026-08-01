@@ -18,6 +18,20 @@ resource "kind_cluster" "local" {
 
     node {
       role = "control-plane"
+
+      extra_port_mappings {
+        container_port = 80
+        host_port      = var.ingress_http_host_port
+        listen_address = "127.0.0.1"
+        protocol       = "TCP"
+      }
+
+      extra_port_mappings {
+        container_port = 443
+        host_port      = var.ingress_https_host_port
+        listen_address = "127.0.0.1"
+        protocol       = "TCP"
+      }
     }
 
     node {
@@ -48,6 +62,56 @@ resource "kubernetes_namespace_v1" "app" {
   }
 }
 
+resource "kubernetes_namespace_v1" "ingress" {
+  metadata {
+    name = var.ingress_namespace
+  }
+}
+
+resource "helm_release" "ingress_nginx" {
+  name             = "ingress-nginx"
+  repository       = "https://kubernetes.github.io/ingress-nginx"
+  chart            = "ingress-nginx"
+  version          = var.ingress_nginx_chart_version
+  namespace        = kubernetes_namespace_v1.ingress.metadata[0].name
+  create_namespace = false
+  wait             = true
+  timeout          = 600
+
+  values = [
+    yamlencode({
+      controller = {
+        hostPort = {
+          enabled = true
+        }
+        publishService = {
+          enabled = false
+        }
+        service = {
+          type = "ClusterIP"
+        }
+        nodeSelector = {
+          "kubernetes.io/hostname" = "${var.cluster_name}-control-plane"
+        }
+        tolerations = [
+          {
+            key      = "node-role.kubernetes.io/control-plane"
+            operator = "Exists"
+            effect   = "NoSchedule"
+          },
+          {
+            key      = "node-role.kubernetes.io/master"
+            operator = "Exists"
+            effect   = "NoSchedule"
+          }
+        ]
+      }
+    })
+  ]
+
+  depends_on = [kind_cluster.local]
+}
+
 resource "helm_release" "spring_grpc_samples" {
   name              = "spring-grpc-samples"
   chart             = "${path.module}/../helm/spring-grpc-samples"
@@ -55,6 +119,30 @@ resource "helm_release" "spring_grpc_samples" {
   dependency_update = true
   wait              = true
   timeout           = 600
+
+  values = [
+    yamlencode({
+      ingress = {
+        enabled   = true
+        className = var.ingress_class_name
+        annotations = {
+          "nginx.ingress.kubernetes.io/backend-protocol" = "GRPC"
+          "nginx.ingress.kubernetes.io/ssl-redirect"     = "false"
+        }
+        hosts = [
+          {
+            host = var.ingress_host
+            paths = [
+              {
+                path     = "/"
+                pathType = "Prefix"
+              }
+            ]
+          }
+        ]
+      }
+    })
+  ]
 
   set = [
     {
@@ -75,5 +163,8 @@ resource "helm_release" "spring_grpc_samples" {
     }
   ]
 
-  depends_on = [kind_cluster.local]
+  depends_on = [
+    kind_cluster.local,
+    helm_release.ingress_nginx
+  ]
 }

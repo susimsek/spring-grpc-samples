@@ -430,6 +430,15 @@ Run unit tests:
 ./mvnw test
 ```
 
+Run integration tests:
+
+```bash
+./mvnw failsafe:integration-test failsafe:verify
+```
+
+Integration tests use Spring gRPC's in-process test transport via `@AutoConfigureTestGrpcTransport`.
+Tests that inject blocking stubs register them explicitly with `@ImportGrpcClients`, so no real network port is required.
+
 Run full verification:
 
 ```bash
@@ -464,6 +473,12 @@ JaCoCo report:
 
 ```text
 target/site/jacoco/jacoco.xml
+```
+
+JaCoCo integration test report:
+
+```text
+target/site/jacoco-it/jacoco.xml
 ```
 
 ## Performance Tests

@@ -31,6 +31,7 @@ This repo is a Java 25 + Spring Boot 4.1 sample application that exposes a serve
 | Run prod + docker-compose | `./mvnw -Pprod,docker-compose spring-boot:run` |
 | Generate protobuf sources | `./mvnw generate-sources` |
 | Unit tests | `./mvnw test` |
+| Integration tests | `./mvnw failsafe:integration-test failsafe:verify` |
 | Full verify | `./mvnw verify` |
 | Reliable full check | `./mvnw test && ./mvnw verify` |
 | Format check | `./mvnw spotless:check` |
@@ -109,16 +110,36 @@ This repo is a Java 25 + Spring Boot 4.1 sample application that exposes a serve
 ## Testing Guidelines
 
 - Unit tests live under `src/test/java` and use singular class names ending with `Test`.
+- Integration tests live under `src/test/java`, use singular class names ending with `IT`, and use the `@IntegrationTest` meta-annotation where applicable.
 - Keep test class names class-based, for example:
   - `TodoEntityTest`
   - `UserEntityTTest`
   - `AuthorityEntityTTest`
   - `TodoMapperTest`
   - `TodoGrpcServiceTest`
+- Keep integration tests focused on end-to-end wiring of Spring Boot, Spring gRPC, persistence, mapping, and security boundaries. Do not try to exhaustively re-cover every unit-level edge case in ITs.
 - Maintain 100% JaCoCo line and instruction coverage for handwritten application code.
 - The current verification command is:
   - `./mvnw test && ./mvnw verify`
 - Some tests intentionally exercise unhandled exception logging; a `boom` stack trace in test output can be expected if the build exits successfully.
+
+### Integration Tests
+
+- Run all integration tests:
+  - `./mvnw failsafe:integration-test failsafe:verify`
+- Run a single integration test:
+  - `./mvnw -Dit.test=TodoGrpcServiceIT failsafe:integration-test failsafe:verify`
+- Integration tests use Spring gRPC's in-process transport:
+  - `@AutoConfigureTestGrpcTransport`
+- If a test injects gRPC blocking stubs as Spring beans, register them explicitly with:
+  - `@ImportGrpcClients(basePackageClasses = TodoServiceGrpc.class)`
+- Prefer putting `@ImportGrpcClients` on the specific test class that needs the stub, not on a broad shared test annotation, unless multiple integration tests truly need the same client registration.
+- For secured gRPC integration tests, prefer generating a JWT directly with `JwtService` and attaching it as `authorization: Bearer <token>` metadata rather than calling `AuthService/Login` from the test.
+- Do not rely on `@WithMockUser` for real gRPC transport integration tests. It only populates the local test `SecurityContextHolder` and does not authenticate the gRPC request on the server side.
+- Success-path coverage is the default goal for gRPC integration tests. Keep representative failure-path assertions in unit tests or focused security/exception-handler tests unless transport-level behavior itself is what you are validating.
+- JaCoCo reports:
+  - unit: `target/site/jacoco/jacoco.xml`
+  - integration: `target/site/jacoco-it/jacoco.xml`
 
 ### gRPC Testing
 

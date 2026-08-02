@@ -125,7 +125,7 @@ List todos:
 ```bash
 grpcurl -plaintext \
   -rpc-header "authorization: Bearer ${TOKEN}" \
-  -d '{"page":0,"size":5}' \
+  -d '{"pageRequest":{"page":0,"size":5}}' \
   localhost:9090 \
   TodoService/ListTodos
 ```

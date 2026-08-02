@@ -18,6 +18,7 @@ import io.github.susimsek.springgrpcsamples.exception.GrpcValidationException;
 import io.github.susimsek.springgrpcsamples.proto.CreateTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.GetTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.ListTodosRequest;
+import io.github.susimsek.springgrpcsamples.proto.PageRequest;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
@@ -78,7 +79,10 @@ class GrpcValidationServerInterceptorTest {
 
     @Test
     void mapsInt32RuleValuesToMessageArguments() {
-        Object request = ListTodosRequest.newBuilder().setPage(-1).build();
+        Object request =
+                ListTodosRequest.newBuilder()
+                        .setPageRequest(PageRequest.newBuilder().setPage(-1).build())
+                        .build();
         ServerCall.Listener<Object> listener = listener(ValidatorFactory.newBuilder().build());
 
         Throwable thrown = catchThrowable(() -> listener.onMessage(request));

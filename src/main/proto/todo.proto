@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "buf/validate/validate.proto";
 import "google/protobuf/timestamp.proto";
+import "util/pagination.proto";
 
 option java_multiple_files = true;
 option java_package = "io.github.susimsek.springgrpcsamples.proto";
@@ -41,19 +42,7 @@ message GetTodoRequest {
 }
 
 message ListTodosRequest {
-  int32 page = 1 [
-    (buf.validate.field).int32 = {
-      gte: 0
-    }
-  ];
-
-  int32 size = 2 [
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
-    (buf.validate.field).int32 = {
-      gte: 1
-      lte: 100
-    }
-  ];
+  util.PageRequest page_request = 1;
 }
 
 message TodoList {

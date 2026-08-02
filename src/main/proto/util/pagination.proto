@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+import "buf/validate/validate.proto";
+
+option java_multiple_files = true;
+option java_package = "io.github.susimsek.springgrpcsamples.proto";
+option java_outer_classname = "PaginationProto";
+
+package util;
+
+enum Direction {
+  ASC = 0;
+  DESC = 1;
+}
+
+message Order {
+  Direction direction = 1;
+  string property = 2;
+}
+
+message PageRequest {
+  int32 page = 1 [
+    (buf.validate.field).int32 = {
+      gte: 0
+    }
+  ];
+
+  int32 size = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 100
+    }
+  ];
+
+  repeated Order orders = 3;
+}

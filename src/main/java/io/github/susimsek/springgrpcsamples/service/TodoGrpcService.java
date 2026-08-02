@@ -46,9 +46,11 @@ public class TodoGrpcService extends TodoServiceGrpc.TodoServiceImplBase {
 
     @Override
     public void listTodos(ListTodosRequest request, StreamObserver<TodoList> responseObserver) {
-        int pageSize = request.getSize() == 0 ? DEFAULT_PAGE_SIZE : request.getSize();
+        var pageRequest = request.getPageRequest();
+        int pageSize = pageRequest.getSize() == 0 ? DEFAULT_PAGE_SIZE : pageRequest.getSize();
 
-        Page<TodoEntity> page = todoRepository.findAll(PageRequest.of(request.getPage(), pageSize));
+        Page<TodoEntity> page =
+                todoRepository.findAll(PageRequest.of(pageRequest.getPage(), pageSize));
         TodoList.Builder response =
                 TodoList.newBuilder()
                         .setPage(page.getNumber())

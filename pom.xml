@@ -38,6 +38,8 @@
 		<checkstyle.version>13.9.0</checkstyle.version>
 		<properties-maven-plugin.version>1.2.1</properties-maven-plugin.version>
 		<sonar-maven-plugin.version>5.7.0.6970</sonar-maven-plugin.version>
+		<gatling.version>3.15.1</gatling.version>
+		<gatling-maven-plugin.version>4.21.10</gatling-maven-plugin.version>
 		<jib-maven-plugin.version>3.5.2</jib-maven-plugin.version>
 		<jib-spring-boot-extension-maven.version>0.1.0</jib-spring-boot-extension-maven.version>
 		<jib-native-image-extension-maven.version>0.1.0</jib-native-image-extension-maven.version>
@@ -98,6 +100,18 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-grpc-server-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.gatling.highcharts</groupId>
+			<artifactId>gatling-charts-highcharts</artifactId>
+			<version>${gatling.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.gatling</groupId>
+			<artifactId>gatling-grpc-java</artifactId>
+			<version>${gatling.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -293,6 +307,14 @@
 			<plugin>
 				<groupId>org.graalvm.buildtools</groupId>
 				<artifactId>native-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>io.gatling</groupId>
+				<artifactId>gatling-maven-plugin</artifactId>
+				<version>${gatling-maven-plugin.version}</version>
+				<configuration>
+					<runMultipleSimulations>true</runMultipleSimulations>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

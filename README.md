@@ -37,14 +37,15 @@ There is no gRPC client module in this project.
 11. [Database](#database)
 12. [Internationalization](#internationalization)
 13. [Build](#build)
-14. [Code Quality](#code-quality)
-15. [GraalVM Native Image](#graalvm-native-image)
-16. [Docker Image](#docker-image)
-17. [Kubernetes Health Probe](#kubernetes-health-probe)
-18. [Docker Compose Support](#docker-compose-support)
-19. [Helm](#helm)
-20. [Terraform](#terraform)
-21. [Continuous Integration](#continuous-integration)
+14. [Performance Tests](#performance-tests)
+15. [Code Quality](#code-quality)
+16. [GraalVM Native Image](#graalvm-native-image)
+17. [Docker Image](#docker-image)
+18. [Kubernetes Health Probe](#kubernetes-health-probe)
+19. [Docker Compose Support](#docker-compose-support)
+20. [Helm](#helm)
+21. [Terraform](#terraform)
+22. [Continuous Integration](#continuous-integration)
 
 ## Features
 
@@ -100,6 +101,7 @@ There is no gRPC client module in this project.
 - Docker compose files: `src/main/docker`
 - Helm chart: `helm/spring-grpc-samples`
 - Tests: `src/test/java`
+- Gatling performance tests: `src/test/java/gatling/simulations`
 
 ## Configuration
 
@@ -271,7 +273,7 @@ List todos:
 ```bash
 grpcurl -plaintext \
   -rpc-header "authorization: Bearer ${TOKEN}" \
-  -d '{"page":0,"size":5}' \
+  -d '{"pageRequest":{"page":0,"size":5}}' \
   localhost:9090 \
   TodoService/ListTodos
 ```
@@ -332,7 +334,7 @@ Invalid token example:
 grpcurl -plaintext \
   -rpc-header "authorization: Bearer invalid-token" \
   -rpc-header "accept-language: tr" \
-  -d '{"page":0,"size":5}' \
+  -d '{"pageRequest":{"page":0,"size":5}}' \
   localhost:9090 \
   TodoService/ListTodos
 ```
@@ -348,7 +350,7 @@ USER_TOKEN=$(grpcurl -plaintext \
 grpcurl -plaintext \
   -rpc-header "authorization: Bearer ${USER_TOKEN}" \
   -rpc-header "accept-language: tr" \
-  -d '{"page":0,"size":5}' \
+  -d '{"pageRequest":{"page":0,"size":5}}' \
   localhost:9090 \
   TodoService/ListTodos
 ```
@@ -463,6 +465,42 @@ JaCoCo report:
 ```text
 target/site/jacoco/jacoco.xml
 ```
+
+## Performance Tests
+
+Performance tests are done with Gatling and are located in the `src/test/java/gatling/simulations` folder.
+
+Shared Gatling defaults live in:
+
+```text
+src/test/java/gatling/GatlingDefaults.java
+```
+
+Run all simulations:
+
+```bash
+./mvnw gatling:test
+```
+
+Gatling gRPC Community/trial usage limits:
+
+- maximum `5` users
+- maximum `5` minute duration tests
+
+You can override common runtime parameters:
+
+```bash
+./mvnw gatling:test \
+  -DgrpcHost=localhost \
+  -DgrpcPort=9090 \
+  -Dusers=5 \
+  -Dramp=2 \
+  -Dduration=4 \
+  -Dusername=admin \
+  -Dpassword=admin
+```
+
+The checked-in `TodoSimulation` is written for this project's gRPC server, not for HTTP endpoints. Add more simulations under `gatling.simulations` if you want separate auth, read-heavy, or write-heavy workloads.
 
 ## Code Quality
 

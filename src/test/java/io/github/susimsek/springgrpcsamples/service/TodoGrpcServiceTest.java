@@ -15,6 +15,7 @@ import io.github.susimsek.springgrpcsamples.proto.DeleteTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.DeleteTodoResponse;
 import io.github.susimsek.springgrpcsamples.proto.GetTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.ListTodosRequest;
+import io.github.susimsek.springgrpcsamples.proto.PageRequest;
 import io.github.susimsek.springgrpcsamples.proto.PatchTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.Todo;
 import io.github.susimsek.springgrpcsamples.proto.TodoList;
@@ -153,7 +154,11 @@ class TodoGrpcServiceTest {
         Todo third = createTodo("Third");
         RecordingObserver<TodoList> observer = new RecordingObserver<>();
 
-        service.listTodos(ListTodosRequest.newBuilder().setPage(1).setSize(2).build(), observer);
+        service.listTodos(
+                ListTodosRequest.newBuilder()
+                        .setPageRequest(PageRequest.newBuilder().setPage(1).setSize(2).build())
+                        .build(),
+                observer);
 
         assertThat(observer.values())
                 .singleElement()
@@ -310,7 +315,11 @@ class TodoGrpcServiceTest {
     private RecordingObserver<TodoList> listTodos(int page, int size) {
         RecordingObserver<TodoList> observer = new RecordingObserver<>();
         service.listTodos(
-                ListTodosRequest.newBuilder().setPage(page).setSize(size).build(), observer);
+                ListTodosRequest.newBuilder()
+                        .setPageRequest(
+                                PageRequest.newBuilder().setPage(page).setSize(size).build())
+                        .build(),
+                observer);
         return observer;
     }
 

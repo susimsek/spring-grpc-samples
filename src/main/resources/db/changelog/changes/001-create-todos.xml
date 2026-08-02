@@ -26,9 +26,13 @@
 			<column name="completed" type="boolean" defaultValueBoolean="false">
 				<constraints nullable="false"/>
 			</column>
+			<column name="created_by" type="varchar(100)">
+				<constraints nullable="false"/>
+			</column>
 			<column name="created_at" type="timestamp" defaultValueComputed="${now}">
 				<constraints nullable="false"/>
 			</column>
+			<column name="last_modified_by" type="varchar(100)"/>
 			<column name="updated_at" type="timestamp" defaultValueComputed="${now}">
 				<constraints nullable="false"/>
 			</column>
@@ -53,6 +57,8 @@
 			usePreparedStatements="true">
 			<column header="title" type="string"/>
 			<column header="completed" type="boolean"/>
+			<column header="created_by" type="string"/>
+			<column header="last_modified_by" type="string"/>
 		</loadData>
 	</changeSet>
 </databaseChangeLog>

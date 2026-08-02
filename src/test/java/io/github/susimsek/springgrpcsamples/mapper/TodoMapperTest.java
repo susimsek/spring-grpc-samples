@@ -23,6 +23,8 @@ class TodoMapperTest {
         assertThat(todo.getId()).isNull();
         assertThat(todo.getTitle()).isEqualTo("Mapped title");
         assertThat(todo.isCompleted()).isFalse();
+        assertThat(todo.getCreatedBy()).isNull();
+        assertThat(todo.getLastModifiedBy()).isNull();
         assertThat(todo.getCreatedAt()).isNull();
         assertThat(todo.getUpdatedAt()).isNull();
     }
@@ -30,6 +32,8 @@ class TodoMapperTest {
     @Test
     void updatesEntityFromUpdateTodoRequest() {
         TodoEntity todo = new TodoEntity(1L, "Old title", false);
+        todo.setCreatedBy("system");
+        todo.setLastModifiedBy("admin");
         todo.setCreatedAt(Instant.EPOCH);
         todo.setUpdatedAt(Instant.EPOCH);
 
@@ -44,6 +48,8 @@ class TodoMapperTest {
         assertThat(todo.getId()).isEqualTo(1L);
         assertThat(todo.getTitle()).isEqualTo("Mapped title");
         assertThat(todo.isCompleted()).isTrue();
+        assertThat(todo.getCreatedBy()).isEqualTo("system");
+        assertThat(todo.getLastModifiedBy()).isEqualTo("admin");
         assertThat(todo.getCreatedAt()).isEqualTo(Instant.EPOCH);
         assertThat(todo.getUpdatedAt()).isEqualTo(Instant.EPOCH);
     }
@@ -62,6 +68,8 @@ class TodoMapperTest {
     @Test
     void mapsTodoToResponseWithTimestamps() {
         TodoEntity todo = new TodoEntity(1L, "Mapped title", true);
+        todo.setCreatedBy("system");
+        todo.setLastModifiedBy("admin");
         todo.setCreatedAt(Instant.EPOCH);
         todo.setUpdatedAt(Instant.EPOCH.plusSeconds(1));
 
@@ -70,14 +78,20 @@ class TodoMapperTest {
         assertThat(response.getId()).isEqualTo(1L);
         assertThat(response.getTitle()).isEqualTo("Mapped title");
         assertThat(response.getCompleted()).isTrue();
+        assertThat(response.getCreatedBy()).isEqualTo("system");
+        assertThat(response.getLastModifiedBy()).isEqualTo("admin");
         assertThat(response.hasCreatedAt()).isTrue();
         assertThat(response.hasUpdatedAt()).isTrue();
     }
 
     @Test
     void mapsTodoToResponseWithoutTimestamps() {
-        Todo response = mapper.toProto(new TodoEntity(1L, "Mapped title", false));
+        TodoEntity todo = new TodoEntity(1L, "Mapped title", false);
+        todo.setCreatedBy("system");
+        Todo response = mapper.toProto(todo);
 
+        assertThat(response.getCreatedBy()).isEqualTo("system");
+        assertThat(response.getLastModifiedBy()).isEmpty();
         assertThat(response.hasCreatedAt()).isFalse();
         assertThat(response.hasUpdatedAt()).isFalse();
     }

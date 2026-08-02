@@ -1,11 +1,11 @@
-title;completed
-Refactor gRPC service;false
-Review pageable todo list;true
-Validate mapper records;false
-Prepare Liquibase changelog;true
-Check auditing fields;false
-Update repository tests;true
-Document todo contract;false
-Exercise patch endpoint;true
-Verify delete behavior;false
-Run Maven coverage;true
+title;completed;created_by;last_modified_by
+Refactor gRPC service;false;system;system
+Review pageable todo list;true;system;system
+Validate mapper records;false;system;system
+Prepare Liquibase changelog;true;system;system
+Check auditing fields;false;system;system
+Update repository tests;true;system;system
+Document todo contract;false;system;system
+Exercise patch endpoint;true;system;system
+Verify delete behavior;false;system;system
+Run Maven coverage;true;system;system

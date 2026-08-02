@@ -21,24 +21,32 @@ public interface TodoMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "completed", constant = "false")
+    @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "lastModifiedBy", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     TodoEntity toEntity(CreateTodoRequest request);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "lastModifiedBy", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     void updateEntity(UpdateTodoRequest request, @MappingTarget TodoEntity entity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "lastModifiedBy", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     void patchEntity(PatchTodoRequest request, @MappingTarget TodoEntity entity);
 
     @ProtobufMapping
     @Mapping(target = "mergeCreatedAt", ignore = true)
     @Mapping(target = "mergeUpdatedAt", ignore = true)
+    @Mapping(target = "createdByBytes", ignore = true)
+    @Mapping(target = "lastModifiedByBytes", ignore = true)
     @Mapping(target = "titleBytes", ignore = true)
     Todo toProto(TodoEntity todo);
 }

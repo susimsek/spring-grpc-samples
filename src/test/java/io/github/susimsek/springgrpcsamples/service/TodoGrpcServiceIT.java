@@ -63,6 +63,8 @@ class TodoGrpcServiceIT {
         assertThat(response.getId()).isPositive();
         assertThat(response.getTitle()).isEqualTo("New todo");
         assertThat(response.getCompleted()).isFalse();
+        assertThat(response.getCreatedBy()).isEqualTo("admin");
+        assertThat(response.getLastModifiedBy()).isEqualTo("admin");
         assertThat(response.hasCreatedAt()).isTrue();
         assertThat(response.hasUpdatedAt()).isTrue();
         assertThat(todoRepository.findById(response.getId())).isPresent();
@@ -79,6 +81,8 @@ class TodoGrpcServiceIT {
         assertThat(response.getId()).isEqualTo(saved.getId());
         assertThat(response.getTitle()).isEqualTo("Existing todo");
         assertThat(response.getCompleted()).isTrue();
+        assertThat(response.getCreatedBy()).isEqualTo("system");
+        assertThat(response.getLastModifiedBy()).isEqualTo("system");
     }
 
     @Test
@@ -123,6 +127,8 @@ class TodoGrpcServiceIT {
         assertThat(response.getId()).isEqualTo(saved.getId());
         assertThat(response.getTitle()).isEqualTo("After update");
         assertThat(response.getCompleted()).isTrue();
+        assertThat(response.getCreatedBy()).isEqualTo("system");
+        assertThat(response.getLastModifiedBy()).isEqualTo("admin");
         TodoEntity updated = todoRepository.findById(saved.getId()).orElseThrow();
         assertThat(updated.getTitle()).isEqualTo("After update");
         assertThat(updated.isCompleted()).isTrue();
@@ -143,6 +149,8 @@ class TodoGrpcServiceIT {
         assertThat(response.getId()).isEqualTo(saved.getId());
         assertThat(response.getTitle()).isEqualTo("Before patch");
         assertThat(response.getCompleted()).isTrue();
+        assertThat(response.getCreatedBy()).isEqualTo("system");
+        assertThat(response.getLastModifiedBy()).isEqualTo("admin");
         TodoEntity patched = todoRepository.findById(saved.getId()).orElseThrow();
         assertThat(patched.getTitle()).isEqualTo("Before patch");
         assertThat(patched.isCompleted()).isTrue();

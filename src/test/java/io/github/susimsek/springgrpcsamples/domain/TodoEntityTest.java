@@ -11,13 +11,17 @@ class TodoEntityTest {
     @Test
     void accessorsAndEqualityWork() {
         TodoEntity todo = new TodoEntity();
+        String createdBy = "system";
         Instant createdAt = Instant.EPOCH;
+        String lastModifiedBy = "admin";
         Instant updatedAt = Instant.EPOCH.plusSeconds(1);
 
         todo.setId(1L);
         todo.setTitle("Title");
         todo.setCompleted(true);
+        todo.setCreatedBy(createdBy);
         todo.setCreatedAt(createdAt);
+        todo.setLastModifiedBy(lastModifiedBy);
         todo.setUpdatedAt(updatedAt);
 
         TodoEntity same = new TodoEntity(1L, "Other", false);
@@ -28,7 +32,9 @@ class TodoEntityTest {
         assertThat(todo.getId()).isEqualTo(1L);
         assertThat(todo.getTitle()).isEqualTo("Title");
         assertThat(todo.isCompleted()).isTrue();
+        assertThat(todo.getCreatedBy()).isEqualTo(createdBy);
         assertThat(todo.getCreatedAt()).isEqualTo(createdAt);
+        assertThat(todo.getLastModifiedBy()).isEqualTo(lastModifiedBy);
         assertThat(todo.getUpdatedAt()).isEqualTo(updatedAt);
         assertThat(todo)
                 .isEqualTo(todo)

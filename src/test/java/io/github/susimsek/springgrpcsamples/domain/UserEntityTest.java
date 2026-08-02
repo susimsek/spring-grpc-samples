@@ -15,7 +15,9 @@ class UserEntityTest {
         HashSet<AuthorityEntity> authorities = new HashSet<>();
         authorities.add(authority);
         UserEntity user = new UserEntity();
+        String createdBy = "system";
         Instant createdAt = Instant.EPOCH;
+        String lastModifiedBy = "admin";
         Instant updatedAt = Instant.EPOCH.plusSeconds(1);
 
         user.setId(1L);
@@ -23,7 +25,9 @@ class UserEntityTest {
         user.setPassword("secret");
         user.setEnabled(true);
         user.setAuthorities(authorities);
+        user.setCreatedBy(createdBy);
         user.setCreatedAt(createdAt);
+        user.setLastModifiedBy(lastModifiedBy);
         user.setUpdatedAt(updatedAt);
 
         UserEntity same = new UserEntity(1L, "other", "other", false, new HashSet<>());
@@ -36,7 +40,9 @@ class UserEntityTest {
         assertThat(user.getPassword()).isEqualTo("secret");
         assertThat(user.isEnabled()).isTrue();
         assertThat(user.getAuthorities()).containsExactly(authority);
+        assertThat(user.getCreatedBy()).isEqualTo(createdBy);
         assertThat(user.getCreatedAt()).isEqualTo(createdAt);
+        assertThat(user.getLastModifiedBy()).isEqualTo(lastModifiedBy);
         assertThat(user.getUpdatedAt()).isEqualTo(updatedAt);
         assertThat(new UserEntity().getAuthorities()).isEmpty();
         assertThat(user)

@@ -11,11 +11,16 @@ icon = "run"
 command = "./mvnw -B -ntp spring-boot:run"
 
 [[actions]]
+name = "Debug"
+icon = "debug"
+command = "./mvnw -B -ntp -Dspring-boot.run.jvmArguments='-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000' spring-boot:run"
+
+[[actions]]
 name = "Test"
 icon = "test"
 command = "./mvnw -B -ntp test"
 
 [[actions]]
 name = "Build"
-icon = "build"
+icon = "tool"
 command = "./mvnw -B -ntp package"

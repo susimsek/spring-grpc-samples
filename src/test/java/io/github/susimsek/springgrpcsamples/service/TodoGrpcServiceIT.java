@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.github.susimsek.springgrpcsamples.IntegrationTest;
 import io.github.susimsek.springgrpcsamples.domain.TodoEntity;
-import io.github.susimsek.springgrpcsamples.proto.AuthServiceGrpc;
 import io.github.susimsek.springgrpcsamples.proto.CreateTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.DeleteTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.DeleteTodoResponse;
@@ -15,33 +14,39 @@ import io.github.susimsek.springgrpcsamples.proto.PatchTodoRequest;
 import io.github.susimsek.springgrpcsamples.proto.Todo;
 import io.github.susimsek.springgrpcsamples.proto.TodoList;
 import io.github.susimsek.springgrpcsamples.proto.TodoServiceGrpc;
-import io.github.susimsek.springgrpcsamples.proto.Token;
 import io.github.susimsek.springgrpcsamples.proto.UpdateTodoRequest;
 import io.github.susimsek.springgrpcsamples.repository.TodoRepository;
+import io.github.susimsek.springgrpcsamples.security.AuthoritiesConstants;
+import io.github.susimsek.springgrpcsamples.security.JwtService;
 import io.grpc.Metadata;
 import io.grpc.stub.MetadataUtils;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.grpc.client.ImportGrpcClients;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.TestConstructor;
 
 @IntegrationTest
+@ImportGrpcClients(basePackageClasses = TodoServiceGrpc.class)
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 class TodoGrpcServiceIT {
 
     private static final Metadata.Key<String> AUTHORIZATION_HEADER =
             Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER);
 
-    private final AuthServiceGrpc.AuthServiceBlockingStub authServiceStub;
     private final TodoServiceGrpc.TodoServiceBlockingStub todoServiceStub;
     private final TodoRepository todoRepository;
+    private final JwtService jwtService;
 
     TodoGrpcServiceIT(
-            AuthServiceGrpc.AuthServiceBlockingStub authServiceStub,
             TodoServiceGrpc.TodoServiceBlockingStub todoServiceStub,
-            TodoRepository todoRepository) {
-        this.authServiceStub = authServiceStub;
+            TodoRepository todoRepository,
+            JwtService jwtService) {
         this.todoServiceStub = todoServiceStub;
         this.todoRepository = todoRepository;
+        this.jwtService = jwtService;
     }
 
     @BeforeEach
@@ -157,14 +162,14 @@ class TodoGrpcServiceIT {
     }
 
     private TodoServiceGrpc.TodoServiceBlockingStub authenticatedTodoStub() {
-        Token token =
-                authServiceStub.login(
-                        io.github.susimsek.springgrpcsamples.proto.LoginRequest.newBuilder()
-                                .setUsername("admin")
-                                .setPassword("admin")
-                                .build());
+        String token =
+                jwtService.generateToken(
+                        UsernamePasswordAuthenticationToken.authenticated(
+                                "admin",
+                                "N/A",
+                                List.of(new SimpleGrantedAuthority(AuthoritiesConstants.ADMIN))));
         Metadata headers = new Metadata();
-        headers.put(AUTHORIZATION_HEADER, "Bearer " + token.getAccessToken());
+        headers.put(AUTHORIZATION_HEADER, "Bearer " + token);
         return todoServiceStub.withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers));
     }
 

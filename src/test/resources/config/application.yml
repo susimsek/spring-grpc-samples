@@ -1,0 +1,34 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  cache:
+    type: none
+  datasource:
+    url: jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        implicit-strategy: org.springframework.boot.hibernate.SpringImplicitNamingStrategy
+    properties:
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+      hibernate.jdbc.time_zone: Europe/Istanbul
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    contexts: test
+  grpc:
+    server:
+      port: 0
+
+app:
+  security:
+    jwt:
+      secret: onMAEhlrulDjt0cM8wdiSHBGRl9SUaXMAO7XaotoX/U=
+      issuer: http://localhost:8080
+      expires-in: PT30M

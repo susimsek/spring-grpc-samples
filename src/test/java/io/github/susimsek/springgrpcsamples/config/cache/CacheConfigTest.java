@@ -28,6 +28,16 @@ class CacheConfigTest {
     }
 
     @Test
+    void usesDefaultCaffeineProperties() {
+        ApplicationProperties.Caffeine caffeine =
+                new ApplicationProperties().getCache().getCaffeine();
+
+        assertThat(caffeine.getTtl()).isEqualTo(Duration.ofHours(1));
+        assertThat(caffeine.getInitialCapacity()).isEqualTo(500);
+        assertThat(caffeine.getMaximumSize()).isEqualTo(1000L);
+    }
+
+    @Test
     void createsSpringCacheManagerFromApplicationProperties() {
         ApplicationProperties applicationProperties = applicationProperties();
 

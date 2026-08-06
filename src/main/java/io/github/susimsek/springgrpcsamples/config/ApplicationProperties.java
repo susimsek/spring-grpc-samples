@@ -25,11 +25,11 @@ public class ApplicationProperties {
     @Setter
     public static class Caffeine {
 
-        private Duration ttl = Duration.ofMinutes(10);
+        private Duration ttl = Duration.ofHours(1);
 
-        private int initialCapacity = 100;
+        private int initialCapacity = 500;
 
-        private long maximumSize = 1_000;
+        private long maximumSize = 1000L;
     }
 
     @Getter
@@ -47,6 +47,6 @@ public class ApplicationProperties {
 
         private String secret;
 
-        private Duration expiresIn;
+        private Duration expiresIn = Duration.ofHours(1);
     }
 }

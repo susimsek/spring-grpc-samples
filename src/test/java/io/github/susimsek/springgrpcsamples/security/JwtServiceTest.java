@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.github.susimsek.springgrpcsamples.config.ApplicationProperties;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.List;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -32,7 +31,6 @@ class JwtServiceTest {
                 NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS256).build();
         ApplicationProperties applicationProperties = new ApplicationProperties();
         applicationProperties.getSecurity().getJwt().setIssuer("https://test-issuer");
-        applicationProperties.getSecurity().getJwt().setExpiresIn(Duration.ofHours(1));
         JwtService jwtService = new JwtService(encoder, applicationProperties);
 
         String token =

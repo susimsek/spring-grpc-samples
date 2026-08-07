@@ -31,6 +31,8 @@ import java.util.UUID;
 
 public class TodoSimulation extends Simulation {
 
+    private static final String BEARER_AUTHORIZATION_VALUE = "Bearer #{access_token}";
+
     private final GrpcProtocolBuilder grpcProtocol = GatlingDefaults.grpcProtocol();
 
     private final ChainBuilder login =
@@ -60,7 +62,7 @@ public class TodoSimulation extends Simulation {
                                                                     session.getString("todoTitle"))
                                                             .build())
                                     .asciiHeader("authorization")
-                                    .valueEL("Bearer #{access_token}")
+                                    .valueEL(BEARER_AUTHORIZATION_VALUE)
                                     .check(
                                             statusCode().is(Status.Code.OK),
                                             response(Todo::getId).saveAs("todoId"),
@@ -76,7 +78,7 @@ public class TodoSimulation extends Simulation {
                                                             .setId(session.getLong("todoId"))
                                                             .build())
                                     .asciiHeader("authorization")
-                                    .valueEL("Bearer #{access_token}")
+                                    .valueEL(BEARER_AUTHORIZATION_VALUE)
                                     .check(
                                             statusCode().is(Status.Code.OK),
                                             response(Todo::getId).isEL("#{todoId}")))
@@ -93,7 +95,7 @@ public class TodoSimulation extends Simulation {
                                                                     .build())
                                                     .build())
                                     .asciiHeader("authorization")
-                                    .valueEL("Bearer #{access_token}")
+                                    .valueEL(BEARER_AUTHORIZATION_VALUE)
                                     .check(
                                             statusCode().is(Status.Code.OK),
                                             response(TodoList::getItemsCount).gte(0)))
@@ -111,7 +113,7 @@ public class TodoSimulation extends Simulation {
                                                             .setCompleted(true)
                                                             .build())
                                     .asciiHeader("authorization")
-                                    .valueEL("Bearer #{access_token}")
+                                    .valueEL(BEARER_AUTHORIZATION_VALUE)
                                     .check(
                                             statusCode().is(Status.Code.OK),
                                             response(Todo::getCompleted).is(true)))
@@ -128,7 +130,7 @@ public class TodoSimulation extends Simulation {
                                                                             + " Patched")
                                                             .build())
                                     .asciiHeader("authorization")
-                                    .valueEL("Bearer #{access_token}")
+                                    .valueEL(BEARER_AUTHORIZATION_VALUE)
                                     .check(
                                             statusCode().is(Status.Code.OK),
                                             response(Todo::getTitle).isEL("#{todoTitle} Patched")))
@@ -142,7 +144,7 @@ public class TodoSimulation extends Simulation {
                                                             .setId(session.getLong("todoId"))
                                                             .build())
                                     .asciiHeader("authorization")
-                                    .valueEL("Bearer #{access_token}")
+                                    .valueEL(BEARER_AUTHORIZATION_VALUE)
                                     .check(
                                             statusCode().is(Status.Code.OK),
                                             response(DeleteTodoResponse::getDeleted).is(true)))

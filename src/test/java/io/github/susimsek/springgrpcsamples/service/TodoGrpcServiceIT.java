@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.grpc.client.ImportGrpcClients;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.test.context.TestConstructor;
 
 @IntegrationTest
@@ -177,7 +178,8 @@ class TodoGrpcServiceIT {
                                 "N/A",
                                 List.of(new SimpleGrantedAuthority(AuthoritiesConstants.ADMIN))));
         Metadata headers = new Metadata();
-        headers.put(AUTHORIZATION_HEADER, "Bearer " + token);
+        headers.put(
+                AUTHORIZATION_HEADER, OAuth2AccessToken.TokenType.BEARER.getValue() + " " + token);
         return todoServiceStub.withInterceptors(MetadataUtils.newAttachHeadersInterceptor(headers));
     }
 

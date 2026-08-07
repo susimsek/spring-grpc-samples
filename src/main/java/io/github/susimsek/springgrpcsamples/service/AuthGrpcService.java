@@ -11,13 +11,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
-
-    private static final String BEARER_TOKEN_TYPE = "Bearer";
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
@@ -28,7 +27,7 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
         responseObserver.onNext(
                 Token.newBuilder()
                         .setAccessToken(jwtService.generateToken(authentication))
-                        .setTokenType(BEARER_TOKEN_TYPE)
+                        .setTokenType(OAuth2AccessToken.TokenType.BEARER.getValue())
                         .setExpiresIn(jwtService.getExpiresInSeconds())
                         .build());
         responseObserver.onCompleted();

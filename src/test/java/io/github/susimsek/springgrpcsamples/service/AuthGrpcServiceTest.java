@@ -22,6 +22,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 
 @ExtendWith(MockitoExtension.class)
 class AuthGrpcServiceTest {
@@ -51,7 +52,8 @@ class AuthGrpcServiceTest {
                 .satisfies(
                         response -> {
                             assertThat(response.getAccessToken()).isEqualTo("jwt-token");
-                            assertThat(response.getTokenType()).isEqualTo("Bearer");
+                            assertThat(response.getTokenType())
+                                    .isEqualTo(OAuth2AccessToken.TokenType.BEARER.getValue());
                             assertThat(response.getExpiresIn()).isEqualTo(3600L);
                         });
         assertThat(observer.completed()).isTrue();

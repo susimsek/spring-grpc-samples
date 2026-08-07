@@ -54,6 +54,10 @@ public final class GatlingDefaults {
         return Optional.ofNullable(System.getProperty("password")).orElse("admin");
     }
 
+    public static String bearerAuthorizationValue() {
+        return "Bearer #{access_token}";
+    }
+
     public static GrpcProtocolBuilder grpcProtocol() {
         return grpc.serverConfigurations(
                 grpc.serverConfiguration("default").forAddress(host(), port()).usePlaintext());
